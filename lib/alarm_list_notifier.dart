@@ -12,9 +12,12 @@ final alarmListProvider = StateNotifierProvider<AlarmListNotifier, List<String>>
 final switchProvider = StateProvider.family<bool, int>((ref, index) {
   return true;
 });
-final hour = Provider<int>((ref) {
+final hourProvider = StateProvider<int>((ref) {
   return 0;
 });
-final minute = Provider<int>((ref) {
+final minuteProvider = StateProvider<int>((ref) {
   return 0;
+});
+final timeFormatProvider = StateProvider<String>((ref) {
+  return "";
 });

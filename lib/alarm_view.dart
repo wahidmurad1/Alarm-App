@@ -1,5 +1,5 @@
 import 'package:alarm_app/alarm_details_page.dart';
-import 'package:alarm_app/alarm_list_notifier.dart';
+import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +9,7 @@ class AlarmView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alarmList = ref.watch(alarmListProvider);
+    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -22,19 +22,20 @@ class AlarmView extends ConsumerWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
             actions: [
-              IconButton(
-                onPressed: () {
-                  Consumer(builder: (context, ref, child) {
-                    ref.invalidate(pickedTimeProvider);
-                    return const SizedBox();
-                  });
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
+              Consumer(
+                builder: (context, ref, child) {
+                  return IconButton(
+                    onPressed: () {
+                      ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      size: 28,
+                      color: Colors.blue,
+                    ),
+                  );
                 },
-                icon: const Icon(
-                  Icons.add,
-                  size: 28,
-                  color: Colors.blue,
-                ),
               ),
             ],
           ),
@@ -42,9 +43,9 @@ class AlarmView extends ConsumerWidget {
             children: [
               Expanded(
                 child: ListView.separated(
-                  itemCount: alarmList.length,
+                  itemCount: alarmChangeNotifier.alarmList.length,
                   itemBuilder: (context, index) {
-                    final switchState = ref.watch(switchProvider(index));
+                    final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                     return Padding(
                       padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
                       child: Container(
@@ -55,7 +56,7 @@ class AlarmView extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              alarmList[index].toString(),
+                              alarmChangeNotifier.alarmList[index].toString(),
                               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
@@ -67,7 +68,7 @@ class AlarmView extends ConsumerWidget {
                                   trackColor: const Color.fromARGB(255, 220, 218, 218),
                                   value: switchState,
                                   onChanged: (value) {
-                                    ref.read(switchProvider(index).notifier).state = value;
+                                    ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                   },
                                   // activeTrackColor: Colors.blue,
                                 ),

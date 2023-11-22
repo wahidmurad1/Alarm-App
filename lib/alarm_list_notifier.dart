@@ -21,3 +21,6 @@ final minuteProvider = StateProvider<int>((ref) {
 final timeFormatProvider = StateProvider<String>((ref) {
   return "";
 });
+final pickedTimeProvider = StateProvider<DateTime>((ref) {
+  return DateTime.now();
+},);

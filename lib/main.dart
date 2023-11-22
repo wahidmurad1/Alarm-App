@@ -1,4 +1,5 @@
 import 'package:alarm_app/alarm_view.dart';
+import 'package:alarm_app/test_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const AlarmView(),
+      home: TestPage(),
     );
   }
 }

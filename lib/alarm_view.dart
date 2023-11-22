@@ -1,11 +1,13 @@
 import 'package:alarm_app/alarm_details_page.dart';
+import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AlarmView extends ConsumerWidget {
-  const AlarmView({super.key});
+  AlarmView({super.key});
+  final NotificationServices notificationServices = NotificationServices();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,6 +89,12 @@ class AlarmView extends ConsumerWidget {
                   },
                 ),
               ),
+              ElevatedButton(
+                  onPressed: () {
+                    notificationServices.initializationNotification();
+                    notificationServices.sendNotification('alarm', 'Alarm Body');
+                  },
+                  child: const Text('Notifications')),
             ],
           ),
         ),

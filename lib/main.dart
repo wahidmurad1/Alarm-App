@@ -1,5 +1,5 @@
 import 'package:alarm_app/alarm_view.dart';
-import 'package:alarm_app/test_page.dart';
+import 'package:alarm_app/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    heightWidthKeyboardValue(context);
     return MaterialApp(
       title: 'Alarm App',
       theme: ThemeData(
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: TestPage(),
+      home: AlarmView(),
     );
   }
 }

@@ -16,12 +16,15 @@ const Color cWarningColor = Color(0xFFFFBB0D);
 const Color cSuccessColor = Color(0xFF00D261);
 const Color cRedAccentColor = Color(0xFFF76554);
 const Color cTransparentColor = Colors.transparent;
+const Color cBlackColor = Colors.black;
+const Color cPrimaryTint3Color = Color(0xFFD3F0FF);
 
 //* new color
 const Color cPrimaryTintColor = Color(0xFFD8DEFF);
 const Color cBlueAccent = Color(0XFFECEBFF);
 const Color cBlueShade = Color(0XFFB8B1FF);
-
+const Color cNeutralColor = Color(0XFFECECEC);
+const Color cLineColor = Color(0xFFD5D8E2);
 
 double height = 0.0;
 double width = 0.0;
@@ -45,8 +48,11 @@ const kW12sizedBox = SizedBox(width: 12);
 const kW16sizedBox = SizedBox(width: 16);
 const kW20sizedBox = SizedBox(width: 20);
 
-
 const double h36 = 36.0;
+const double h28 = 28.0;
+const double h12 = 12.0;
+const double h14 = 14.0;
+const double h16 = 16.0;
 
 //* info: remove extra padding from TextButton
 ButtonStyle? kTextButtonStyle = TextButton.styleFrom(
@@ -55,3 +61,32 @@ ButtonStyle? kTextButtonStyle = TextButton.styleFrom(
   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
   splashFactory: InkSplash.splashFactory,
 );
+//* size limit comparison constant
+const double kSmallDeviceSizeLimit = 750.0;
+bool isDeviceScreenLarge() {
+  if (height > kSmallDeviceSizeLimit) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+dynamic screenWiseSize(size, difference) {
+  return isDeviceScreenLarge() ? size : size - difference;
+}
+
+TextStyle semiBold14TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h14, 2), color: color);
+}
+
+TextStyle semiBold16TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h16, 2), color: color);
+}
+
+TextStyle regular12TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h12, 2), color: color);
+}
+
+TextStyle regular14TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h14, 2), color: color);
+}

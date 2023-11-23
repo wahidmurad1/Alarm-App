@@ -29,6 +29,8 @@ class AlarmView extends ConsumerWidget {
                   return IconButton(
                     onPressed: () {
                       ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
+                      ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
+                      ref.invalidate(alarmChangeNotifier.alarmActionSelect);
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
                     },
                     icon: const Icon(

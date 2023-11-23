@@ -1,5 +1,7 @@
 import 'package:alarm_app/bottom_sheet.dart';
 import 'package:alarm_app/const.dart';
+import 'package:alarm_app/custom_list_tile.dart';
+import 'package:alarm_app/custom_radio_button.dart';
 import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,10 +19,6 @@ class AlarmDetailsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        // scrolledUnderElevation: 30,
-        // flexibleSpace: const SizedBox(
-        //   height: 45,
-        // ),
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -48,9 +46,6 @@ class AlarmDetailsPage extends ConsumerWidget {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            // const SizedBox(
-            //   height: 40,
-            // ),
             SizedBox(
               height: 180,
               child: CupertinoDatePicker(
@@ -83,38 +78,66 @@ class AlarmDetailsPage extends ConsumerWidget {
               ),
             ),
             InkWell(
-              //off the splash effect
+              //*off the splash effect
               splashFactory: NoSplash.splashFactory,
               highlightColor: Colors.transparent,
               onTap: () {
+                if (ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state == '') {
+                  ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = '';
+                  ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                } else {
+                  ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
+                  ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                }
                 commonBottomSheet(
-                  // bottomSheetHeight: height * 0.4,
+                  bottomSheetHeight: 240,
                   context: context,
                   onPressCloseButton: () {
                     Navigator.pop(context);
                   },
-                  onPressRightButton: () {},
-                  content: SizedBox(
-                    height: height,
-                    width: width,
-                    child: const Text('Hi'),
-                  ),
+                  onPressRightButton: () {
+                    ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.tempAlarmActionSelect);
+                    if (ref.watch(alarmChangeNotifier.alarmActionSelect) != 'Custom') {
+                      Navigator.pop(context);
+                    } else {
+                      commonBottomSheet(
+                        // bottomSheetHeight: 240,
+                        context: context,
+                        onPressCloseButton: () {
+                          Navigator.pop(context);
+                        },
+                        onPressRightButton: () {
+                          ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.tempAlarmActionSelect);
+                          if (ref.watch(alarmChangeNotifier.alarmActionSelect) != 'Custom') {
+                            Navigator.pop(context);
+                          } else {}
+                        },
+                        content: const AlarmActionContent(),
+                        rightText: 'Done',
+                        title: 'Alarm',
+                        rightTextStyle: semiBold16TextStyle(cPrimaryColor),
+                        isRightButtonShow: true,
+                      );
+                    }
+                  },
+                  content: const AlarmActionContent(),
                   rightText: 'Done',
                   title: 'Alarm',
-                  rightTextStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  rightTextStyle: semiBold16TextStyle(cPrimaryColor),
                   isRightButtonShow: true,
                 );
               },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Repeat',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
-                    Icon(
+                    const Spacer(),
+                    ref.watch(alarmChangeNotifier.alarmActionSelect) != "" ? Text(ref.watch(alarmChangeNotifier.alarmActionSelect)) : const SizedBox(),
+                    const Icon(
                       Icons.keyboard_arrow_right_outlined,
                       size: 28,
                     )
@@ -131,6 +154,59 @@ class AlarmDetailsPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AlarmActionContent extends ConsumerWidget {
+  const AlarmActionContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+    return Column(
+      children: [
+        ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: alarmChangeNotifier.repeatType.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: CustomListTile(
+                title: alarmChangeNotifier.repeatType[index].toString(),
+                titleTextStyle: semiBold16TextStyle(cBlackColor),
+                trailing: Consumer(
+                  builder: (context, ref, child) {
+                    return CustomRadioButton(
+                      onChanged: () {
+                        ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
+                        if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                          ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                        } else {
+                          ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                        }
+                      },
+                      isSelected: ref.watch(alarmChangeNotifier.tempAlarmActionSelect) == alarmChangeNotifier.repeatType[index],
+                    );
+                  },
+                ),
+                itemColor: ref.watch(alarmChangeNotifier.tempAlarmActionSelect) == alarmChangeNotifier.repeatType[index] ? cPrimaryTint3Color : cWhiteColor,
+                onPressed: () {
+                  ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
+                  if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                    ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                  } else {
+                    ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                  }
+                },
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

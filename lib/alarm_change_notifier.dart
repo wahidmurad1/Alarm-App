@@ -9,7 +9,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
     alarmList.add(value);
     notifyListeners();
   }
-  
+
+  final List<String> repeatType = ['Ring once', 'Everyday', 'Sunday-Thusday', 'Custom'];
 
   String getDifference(DateTime alarmTime) {
     if (alarmTime.isBefore(DateTime.now())) {
@@ -21,17 +22,9 @@ class AlarmChangeNotifier extends ChangeNotifier {
     }
   }
 
-  final pickedTimeProvider = StateProvider<DateTime>(
-    (ref) {
-      return DateTime.now();
-    },
-  );
-  // final currentTimeProvider = StateProvider<DateTime>(
-  //   (ref) {
-  //     return DateTime.now();
-  //   },
-  // );
-  final switchProvider = StateProvider.family<bool, int>((ref, index) {
-    return true;
-  });
+  final pickedTimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
+
+  final switchProvider = StateProvider.family<bool, int>((ref, index) => true);
+  final alarmActionSelect = StateProvider<String>((ref) => '');
+  final tempAlarmActionSelect = StateProvider<String>((ref) => '');
 }

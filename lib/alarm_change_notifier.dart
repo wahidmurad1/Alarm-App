@@ -28,6 +28,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final switchProvider = StateProvider.family<bool, int>((ref, index) => true);
   final vibrationSwitchProvider = StateProvider<bool>((ref) => true);
   final checkBoxProvider = StateProvider.family<bool, int>((ref, index) => false);
+  final customDaysActionProvider = StateProvider.family<String, int>((ref, index) => '');
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
 }

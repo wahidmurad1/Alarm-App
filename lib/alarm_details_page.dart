@@ -101,12 +101,15 @@ class AlarmDetailsPage extends ConsumerWidget {
                       Navigator.pop(context);
                     } else {
                       ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
+                      Navigator.pop(context);
                       commonBottomSheet(
                         context: context,
                         onPressCloseButton: () {
                           Navigator.pop(context);
                         },
-                        onPressRightButton: () {},
+                        onPressRightButton: () {
+                          Navigator.pop(context);
+                        },
                         content: const CustomAlarmShow(),
                         rightText: 'Done',
                         title: 'Custom Alarm',
@@ -170,7 +173,6 @@ class AlarmDetailsPage extends ConsumerWidget {
                             onChanged: (value) {
                               ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = value;
                             },
-                            // activeTrackColor: Colors.blue,
                           ),
                         ),
                       );
@@ -185,21 +187,27 @@ class AlarmDetailsPage extends ConsumerWidget {
                 thickness: 0.5,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               child: Row(
                 children: [
-                  const Text(
+                  Text(
                     'Ringtone',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
-                  const Spacer(),
-                  ref.watch(alarmChangeNotifier.alarmActionSelect) != "" ? Text(ref.watch(alarmChangeNotifier.alarmActionSelect)) : const SizedBox(),
-                  const Icon(
+                  Spacer(),
+                  Text('Default'),
+                  Icon(
                     Icons.keyboard_arrow_right_outlined,
                     size: 28,
                   )
                 ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Divider(
+                thickness: 0.5,
               ),
             ),
           ],
@@ -288,7 +296,8 @@ class CustomAlarmShow extends ConsumerWidget {
                     final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
                     return Checkbox(
                         value: checkBoxState,
-                        checkColor: cPrimaryColor,
+                        checkColor: cWhiteColor,
+                        activeColor: cPrimaryColor,
                         onChanged: (value) {
                           // ref.read(alarmChangeNotifier.checkBoxProvider.notifier).state = value;
                           // ref.read(alarmChangeNotifier.checkBoxProvider);
@@ -296,7 +305,9 @@ class CustomAlarmShow extends ConsumerWidget {
                         });
                   },
                 ),
-                itemColor: ref.watch(alarmChangeNotifier.tempAlarmActionSelect) == alarmChangeNotifier.customDays[index] ? cPrimaryTint3Color : cWhiteColor,
+                itemColor: ref.watch(alarmChangeNotifier.customDaysActionProvider(index).notifier).state == alarmChangeNotifier.customDays[index]
+                    ? cPrimaryTint3Color
+                    : cWhiteColor,
                 onPressed: () {
                   // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.customDays[index];
                   // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {

@@ -11,10 +11,11 @@ class AlarmChangeNotifier extends ChangeNotifier {
   }
 
   final List<String> repeatType = ['Ring once', 'Everyday', 'Sunday-Thusday', 'Custom'];
+  final List<String> customDays = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednusday', 'Thusday', 'Friday'];
 
   String getDifference(DateTime alarmTime) {
     if (alarmTime.isBefore(DateTime.now())) {
-      Duration duration = Duration(hours: 24) + alarmTime.difference(DateTime.now());
+      Duration duration = const Duration(hours: 24) + alarmTime.difference(DateTime.now());
       return '${duration.inHours.abs()} hours ${duration.inMinutes.remainder(60).abs()} Minutes';
     } else {
       Duration duration = DateTime.now().difference(alarmTime);
@@ -25,6 +26,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final pickedTimeProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
   final switchProvider = StateProvider.family<bool, int>((ref, index) => true);
+  final vibrationSwitchProvider = StateProvider<bool>((ref) => true);
+  final checkBoxProvider = StateProvider.family<bool, int>((ref, index) => false);
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
 }

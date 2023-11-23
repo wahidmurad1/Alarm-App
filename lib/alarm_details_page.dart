@@ -30,7 +30,10 @@ class AlarmDetailsPage extends ConsumerWidget {
             color: Colors.black,
           ),
         ),
-        title: const Text('Set Alarm'),
+        title: const Text(
+          'Set Alarm',
+          style: TextStyle(color: cBlackColor),
+        ),
         actions: [
           IconButton(
               onPressed: () {
@@ -38,7 +41,10 @@ class AlarmDetailsPage extends ConsumerWidget {
                 notificationServices.sendNotification('Alarm App', 'Your Current Alarm');
                 Navigator.pop(context);
               },
-              icon: const Icon(Icons.check)),
+              icon: const Icon(
+                Icons.check,
+                color: cBlackColor,
+              )),
         ],
       ),
       body: SizedBox(
@@ -49,6 +55,8 @@ class AlarmDetailsPage extends ConsumerWidget {
             SizedBox(
               height: 180,
               child: CupertinoDatePicker(
+                // itemExtent: 0,
+                backgroundColor: cWhiteColor,
                 initialDateTime: DateTime.now(),
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {

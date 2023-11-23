@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Alarm App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
       home: AlarmView(),

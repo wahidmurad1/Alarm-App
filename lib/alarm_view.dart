@@ -6,6 +6,7 @@ import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class AlarmView extends ConsumerWidget {
   AlarmView({super.key});
@@ -99,10 +100,78 @@ class AlarmView extends ConsumerWidget {
                                         activeColor: Colors.blue,
                                         trackColor: const Color.fromARGB(255, 220, 218, 218),
                                         value: switchState,
-                                        onChanged: (value) {
+                                        onChanged: (value) async {
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
+                                          //Extra added
+                                          // String timeString = alarmChangeNotifier.alarmList[index];
+                                          // DateTime dateTime =
+                                          //     DateTime.parse('${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}T$timeString:00.000');
+                                          // String timeString = alarmChangeNotifier.alarmList[index];
+                                          // List<String> timeParts = timeString.split(':');
+
+                                          // DateTime dateTime = DateTime(
+                                          //   DateTime.now().year,
+                                          //   DateTime.now().month,
+                                          //   DateTime.now().day,
+                                          //   int.parse(timeParts[0]),
+                                          //   int.parse(timeParts[1]),
+                                          // );
+                                          DateTime now = DateTime.now();
+                                          String formattedTime = DateFormat('hh:mm a').format(now);
+                                          print(formattedTime);
+                                          if (ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
+                                            final alarmSettings = AlarmSettings(
+                                              id: index,
+                                              dateTime: formattedTime == alarmChangeNotifier.alarmList[index]
+                                                  ? DateTime.now().add(const Duration(minutes: 1))
+                                                  : DateTime.now(), // Set the dateTime
+                                              assetAudioPath: 'assets/alarm.mp3', // Set the assetAudioPath
+                                              loopAudio: true,
+                                              vibrate: true,
+                                              volumeMax: true,
+                                              // fadeDuration: 3.0,
+                                              notificationTitle: 'This is the title',
+                                              notificationBody: 'This is the body',
+                                              enableNotificationOnKill: true,
+                                            );
+
+                                            // Set the alarm
+                                            Alarm.set(alarmSettings: alarmSettings);
+                                          } else {
+                                            await Alarm.stop(index);
+                                          }
+                                          // String timeString = alarmChangeNotifier.alarmList[index];
+                                          // List<String> timeParts = timeString.split(':');
+
+                                          // DateTime selectedTime = DateTime(
+                                          //   DateTime.now().year,
+                                          //   DateTime.now().month,
+                                          //   DateTime.now().day,
+                                          //   int.parse(timeParts[0]),
+                                          //   int.parse(timeParts[1]),
+                                          // );
+                                          // DateTime currentTime = DateTime.now();
+
+                                          // if (selectedTime.isAfter(currentTime)) {
+                                          //   final alarmSettings = AlarmSettings(
+                                          //     id: index, // Set the id to the index of the item in the list
+                                          //     dateTime: selectedTime, // Set the dateTime to the user's selected time
+                                          //     assetAudioPath: 'assets/alarm.mp3', // Set the assetAudioPath
+                                          //     loopAudio: true,
+                                          //     vibrate: true,
+                                          //     volumeMax: true,
+                                          //     fadeDuration: 3.0,
+                                          //     notificationTitle: 'This is the title',
+                                          //     notificationBody: 'This is the body',
+                                          //     enableNotificationOnKill: true,
+                                          //   );
+
+                                          //   // Set the alarm
+                                          //   Alarm.set(alarmSettings: alarmSettings);
+                                          // } else {
+                                          //   // Handle the case where the selected time is in the past
+                                          // }
                                         },
-                                        // activeTrackColor: Colors.blue,
                                       ),
                                     ),
                                   ),

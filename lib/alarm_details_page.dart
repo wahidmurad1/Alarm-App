@@ -39,8 +39,9 @@ class AlarmDetailsPage extends ConsumerWidget {
           IconButton(
               onPressed: () {
                 alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
-                notificationServices.sendNotification('Alarm App', 'Your Current Alarm');
+                // notificationServices.sendNotification('Alarm App', 'Your Current Alarm');
                 Navigator.pop(context);
+
               },
               icon: const Icon(
                 Icons.check,

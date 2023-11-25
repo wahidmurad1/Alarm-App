@@ -31,4 +31,5 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final customDaysActionProvider = StateProvider.family<String, int>((ref, index) => '');
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
+  final fileName = StateProvider<String>((ref) => '');
 }

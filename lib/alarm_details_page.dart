@@ -4,6 +4,7 @@ import 'package:alarm_app/custom_list_tile.dart';
 import 'package:alarm_app/custom_radio_button.dart';
 import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -195,22 +196,47 @@ class AlarmDetailsPage extends ConsumerWidget {
                 thickness: 0.5,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              child: Row(
-                children: [
-                  Text(
-                    'Ringtone',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            Consumer(
+              builder: (context, ref, child) {
+                final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+                return InkWell(
+                  highlightColor: cTransparentColor,
+                  splashFactory: NoSplash.splashFactory,
+                  onTap: () async {
+                    final result = await FilePicker.platform.pickFiles(
+                      allowMultiple: false,
+                      type: FileType.audio,
+                    );
+                    // allowMultiple: false;
+                    if (result == null) return;
+                    //* Open Single file
+                    final file = result.files.first;
+                    // print(file.name);
+                    // .watch(alarmChangeNotifier) = file.name;
+                    // ref.read(alarmChangeNotifier.fileName) = file.name;
+                    ref.read(alarmChangeNotifier.fileName.notifier).state = file.name;
+
+                    //  openFile(file);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Ringtone',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
+                        const Spacer(),
+                        Text(ref.watch(alarmChangeNotifier.fileName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.fileName)),
+                        const Icon(
+                          Icons.keyboard_arrow_right_outlined,
+                          size: 28,
+                        ),
+                      ],
+                    ),
                   ),
-                  Spacer(),
-                  Text('Default'),
-                  Icon(
-                    Icons.keyboard_arrow_right_outlined,
-                    size: 28,
-                  )
-                ],
-              ),
+                );
+              },
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -295,34 +321,38 @@ class CustomAlarmShow extends ConsumerWidget {
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: CustomListTile(
-                title: alarmChangeNotifier.customDays[index].toString(),
-                titleTextStyle: semiBold16TextStyle(cBlackColor),
-                trailing: Consumer(
-                  builder: (context, ref, child) {
-                    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-                    final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
-                    return Checkbox(
-                        value: checkBoxState,
-                        checkColor: cWhiteColor,
-                        activeColor: cPrimaryColor,
-                        onChanged: (value) {
-                          // ref.read(alarmChangeNotifier.checkBoxProvider.notifier).state = value;
-                          // ref.read(alarmChangeNotifier.checkBoxProvider);
-                          ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state = value!;
-                        });
-                  },
-                ),
-                itemColor: ref.watch(alarmChangeNotifier.customDaysActionProvider(index).notifier).state == alarmChangeNotifier.customDays[index]
-                    ? cPrimaryTint3Color
-                    : cWhiteColor,
-                onPressed: () {
-                  // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.customDays[index];
-                  // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
-                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                  // } else {
-                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                  // }
+              child: Consumer(
+                builder: (context, ref, child) {
+                  return CustomListTile(
+                    title: alarmChangeNotifier.customDays[index].toString(),
+                    titleTextStyle: semiBold16TextStyle(cBlackColor),
+                    trailing: Consumer(
+                      builder: (context, ref, child) {
+                        final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+                        final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
+                        return Checkbox(
+                            value: checkBoxState,
+                            checkColor: cWhiteColor,
+                            activeColor: cPrimaryColor,
+                            onChanged: (value) {
+                              // ref.read(alarmChangeNotifier.checkBoxProvider.notifier).state = value;
+                              // ref.read(alarmChangeNotifier.checkBoxProvider);
+                              ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state = value!;
+                            });
+                      },
+                    ),
+                    itemColor: ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state ? cPrimaryTint3Color : cWhiteColor,
+                    onPressed: () {
+                      ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state =
+                          !ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state;
+                      // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.customDays[index];
+                      // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                      //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                      // } else {
+                      //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                      // }
+                    },
+                  );
                 },
               ),
             );

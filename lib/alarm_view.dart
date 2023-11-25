@@ -125,12 +125,6 @@ class AlarmView extends ConsumerWidget {
                             style: semiBold16TextStyle(cPrimaryColor),
                           )))
                   : const SizedBox(),
-              ElevatedButton(
-                  onPressed: () {
-                    notificationServices.initializationNotification();
-                    notificationServices.sendNotification('alarm', 'Alarm Body');
-                  },
-                  child: const Text('Notifications')),
             ],
           ),
         ),

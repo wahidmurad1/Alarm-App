@@ -1,3 +1,4 @@
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,4 +33,17 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
   final fileName = StateProvider<String>((ref) => '');
+  final alarmSettings = AlarmSettings(
+  id: 42,
+  dateTime: DateTime.now().add(const Duration(minutes: 2)),
+  assetAudioPath: 'assets/alarm.mp3',
+  loopAudio: true,
+  vibrate: true,
+  // volumeMax: true,
+  fadeDuration: 3.0,
+  notificationTitle: 'This is the title',
+  notificationBody: 'This is the body',
+  enableNotificationOnKill: true,
+);
+
 }

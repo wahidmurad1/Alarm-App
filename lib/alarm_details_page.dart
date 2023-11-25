@@ -323,25 +323,24 @@ class CustomAlarmShow extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Consumer(
                 builder: (context, ref, child) {
+                  final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+                  final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
                   return CustomListTile(
                     title: alarmChangeNotifier.customDays[index].toString(),
                     titleTextStyle: semiBold16TextStyle(cBlackColor),
                     trailing: Consumer(
                       builder: (context, ref, child) {
-                        final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-                        final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
                         return Checkbox(
                             value: checkBoxState,
                             checkColor: cWhiteColor,
                             activeColor: cPrimaryColor,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                             onChanged: (value) {
-                              // ref.read(alarmChangeNotifier.checkBoxProvider.notifier).state = value;
-                              // ref.read(alarmChangeNotifier.checkBoxProvider);
                               ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state = value!;
                             });
                       },
                     ),
-                    itemColor: ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state ? cPrimaryTint3Color : cWhiteColor,
+                    itemColor: checkBoxState ? cPrimaryTint3Color : cWhiteColor,
                     onPressed: () {
                       ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state =
                           !ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state;

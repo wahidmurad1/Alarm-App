@@ -1,3 +1,4 @@
+import 'package:alarm/alarm.dart';
 import 'package:alarm_app/alarm_details_page.dart';
 import 'package:alarm_app/const.dart';
 import 'package:alarm_app/notification_services.dart';
@@ -63,6 +64,18 @@ class AlarmView extends ConsumerWidget {
                   : Expanded(
                       child: ListView.separated(
                         itemCount: alarmChangeNotifier.alarmList.length,
+                        separatorBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () async {
+                              await Alarm.set(alarmSettings: alarmChangeNotifier.alarmSettings);
+                              // Alarm.ringStream.stream.listen((_) => yourOnRingCallback());
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              child: Divider(),
+                            ),
+                          );
+                        },
                         itemBuilder: (context, index) {
                           final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                           return Padding(
@@ -96,12 +109,6 @@ class AlarmView extends ConsumerWidget {
                                 ],
                               ),
                             ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Divider(),
                           );
                         },
                       ),

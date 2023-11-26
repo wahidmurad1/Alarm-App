@@ -6,6 +6,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
   //   consumerState(){
   // }
   final List<String> alarmList = [];
+
+  //  Map<String, dynamic> get myMap => _myMap;
   void add(String value) {
     alarmList.add(value);
     notifyListeners();
@@ -35,7 +37,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final fileName = StateProvider<String>((ref) => '');
   final alarmSettings = AlarmSettings(
     id: 12,
-    dateTime: DateTime.now().add(const Duration(minutes: 2)),
+    dateTime: DateTime.now().add(const Duration(minutes: 1)),
     assetAudioPath: 'assets/alarm.mp3',
     loopAudio: true,
     vibrate: true,

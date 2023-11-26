@@ -39,6 +39,7 @@ dependencies:
   flutter_local_notifications: ^15.1.2
   file_picker: ^6.1.1
   alarm: ^2.1.1
+  shared_preferences: ^2.2.2
 
 
 dev_dependencies:

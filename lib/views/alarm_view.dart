@@ -1,6 +1,6 @@
 import 'package:alarm/alarm.dart';
-import 'package:alarm_app/alarm_details_page.dart';
-import 'package:alarm_app/const.dart';
+import 'package:alarm_app/views/alarm_details_page.dart';
+import 'package:alarm_app/widgets/const.dart';
 import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
@@ -103,22 +103,9 @@ class AlarmView extends ConsumerWidget {
                                         onChanged: (value) async {
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           //Extra added
-                                          // String timeString = alarmChangeNotifier.alarmList[index];
-                                          // DateTime dateTime =
-                                          //     DateTime.parse('${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}T$timeString:00.000');
-                                          // String timeString = alarmChangeNotifier.alarmList[index];
-                                          // List<String> timeParts = timeString.split(':');
-
-                                          // DateTime dateTime = DateTime(
-                                          //   DateTime.now().year,
-                                          //   DateTime.now().month,
-                                          //   DateTime.now().day,
-                                          //   int.parse(timeParts[0]),
-                                          //   int.parse(timeParts[1]),
-                                          // );
                                           DateTime now = DateTime.now();
                                           String formattedTime = DateFormat('hh:mm a').format(now);
-                                          print(formattedTime);
+                                          // print(formattedTime);
                                           if (ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             final alarmSettings = AlarmSettings(
                                               id: index,

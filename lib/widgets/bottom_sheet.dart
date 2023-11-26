@@ -1,7 +1,7 @@
 
-import 'package:alarm_app/const.dart';
-import 'package:alarm_app/custom_icon_button.dart';
-import 'package:alarm_app/custom_text_button.dart';
+import 'package:alarm_app/widgets/const.dart';
+import 'package:alarm_app/widgets/custom_icon_button.dart';
+import 'package:alarm_app/widgets/custom_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,7 +1,7 @@
-import 'package:alarm_app/bottom_sheet.dart';
-import 'package:alarm_app/const.dart';
-import 'package:alarm_app/custom_list_tile.dart';
-import 'package:alarm_app/custom_radio_button.dart';
+import 'package:alarm_app/widgets/bottom_sheet.dart';
+import 'package:alarm_app/widgets/const.dart';
+import 'package:alarm_app/widgets/custom_list_tile.dart';
+import 'package:alarm_app/widgets/custom_radio_button.dart';
 import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:file_picker/file_picker.dart';
@@ -40,8 +40,14 @@ class AlarmDetailsPage extends ConsumerWidget {
               onPressed: () {
                 alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
                 // notificationServices.sendNotification('Alarm App', 'Your Current Alarm');
+                // for (int index = 0; index < alarmChangeNotifier.alarmList.length; index++) {
+                //   alarmChangeNotifier.alarmMap = {
+                //     'id': index.toString(),
+                //     'time': DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)),
+                //     'repeatType': alarmChangeNotifier.alarmActionSelect
+                //   };
+                // }
                 Navigator.pop(context);
-
               },
               icon: const Icon(
                 Icons.check,

@@ -1,6 +1,6 @@
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
-import 'package:alarm_app/widgets/const.dart';
+import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';

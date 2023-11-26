@@ -1,4 +1,4 @@
-import 'package:alarm_app/widgets/const.dart';
+import 'package:alarm_app/consts/const.dart';
 import 'package:flutter/material.dart';
 
 class CustomListTile extends StatelessWidget {

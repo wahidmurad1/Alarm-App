@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
+import 'package:alarm_app/alarm_change_notifier.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/consts/const.dart';
-import 'package:alarm_app/notification_services.dart';
+
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +13,12 @@ import 'package:intl/intl.dart';
 
 class AlarmView extends ConsumerWidget {
   AlarmView({super.key});
-  final NotificationServices notificationServices = NotificationServices();
-
+  // final NotificationServices notificationServices = NotificationServices();
+  final AlarmChangeNotifier alarmChange = AlarmChangeNotifier();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+    // log('Alarm view ${alarmChangeNotifier.alarmList.toString()}');
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -66,15 +70,9 @@ class AlarmView extends ConsumerWidget {
                       child: ListView.separated(
                         itemCount: alarmChangeNotifier.alarmList.length,
                         separatorBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () async {
-                              await Alarm.set(alarmSettings: alarmChangeNotifier.alarmSettings);
-                              // Alarm.ringStream.stream.listen((_) => yourOnRingCallback());
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Divider(),
-                            ),
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Divider(),
                           );
                         },
                         itemBuilder: (context, index) {
@@ -89,7 +87,7 @@ class AlarmView extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    alarmChangeNotifier.alarmList[index].toString(),
+                                    alarmChangeNotifier.alarmList[index]['time'].toString(),
                                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(
@@ -102,6 +100,9 @@ class AlarmView extends ConsumerWidget {
                                         value: switchState,
                                         onChanged: (value) async {
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
+                                          // alarmChangeNotifier.switchStateValue = ref.read(alarmChangeNotifier.switchProvider(index).notifier).state;
+                                          alarmChangeNotifier.alarmList[index]["alarmSwitch"] = value;
+                                          // alarmChangeNotifier.saveAlarm(context);
                                           //Extra added
                                           DateTime now = DateTime.now();
                                           String formattedTime = DateFormat('hh:mm a').format(now);

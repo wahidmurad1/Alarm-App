@@ -2,7 +2,6 @@ import 'package:alarm_app/widgets/bottom_sheet.dart';
 import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/widgets/custom_list_tile.dart';
 import 'package:alarm_app/widgets/custom_radio_button.dart';
-import 'package:alarm_app/notification_services.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,12 +10,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
-  AlarmDetailsPage({super.key});
-  final NotificationServices notificationServices = NotificationServices();
+  AlarmDetailsPage({
+    super.key,
+  });
+  // final NotificationServices notificationServices = NotificationServices();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+   final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+    alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -39,15 +41,9 @@ class AlarmDetailsPage extends ConsumerWidget {
           IconButton(
               onPressed: () {
                 alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
-                // notificationServices.sendNotification('Alarm App', 'Your Current Alarm');
-                // for (int index = 0; index < alarmChangeNotifier.alarmList.length; index++) {
-                //   alarmChangeNotifier.alarmMap = {
-                //     'id': index.toString(),
-                //     'time': DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)),
-                //     'repeatType': alarmChangeNotifier.alarmActionSelect
-                //   };
-                // }
-                Navigator.pop(context);
+                alarmChangeNotifier.saveAlarm(context);
+                // SpController().deleteAllData();
+                // SpController().getAlarmList();
               },
               icon: const Icon(
                 Icons.check,
@@ -69,6 +65,7 @@ class AlarmDetailsPage extends ConsumerWidget {
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
                   ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
+                  alarmChangeNotifier.formattedTime(value);
                   ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
                 },
               ),
@@ -113,10 +110,12 @@ class AlarmDetailsPage extends ConsumerWidget {
                   },
                   onPressRightButton: () {
                     ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.tempAlarmActionSelect);
+                    alarmChangeNotifier.repeatTypeValue = ref.watch(alarmChangeNotifier.alarmActionSelect);
+                    // log(alarmChangeNotifier.repeatTypeValue);
                     if (ref.watch(alarmChangeNotifier.alarmActionSelect) != 'Custom') {
                       Navigator.pop(context);
                     } else {
-                      ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
+                      // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
                       Navigator.pop(context);
                       commonBottomSheet(
                         context: context,
@@ -188,6 +187,7 @@ class AlarmDetailsPage extends ConsumerWidget {
                             value: vibrationSwitch,
                             onChanged: (value) {
                               ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = value;
+                              alarmChangeNotifier.vibrationSwitchState = value;
                             },
                           ),
                         ),
@@ -222,7 +222,8 @@ class AlarmDetailsPage extends ConsumerWidget {
                     // .watch(alarmChangeNotifier) = file.name;
                     // ref.read(alarmChangeNotifier.fileName) = file.name;
                     ref.read(alarmChangeNotifier.fileName.notifier).state = file.name;
-
+                    alarmChangeNotifier.fileNameValue = file.name;
+                    // log(alarmChangeNotifier.fileNameValue);
                     //  openFile(file);
                   },
                   child: Padding(

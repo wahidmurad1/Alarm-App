@@ -1,13 +1,21 @@
-import 'package:alarm/model/alarm_settings.dart';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class AlarmChangeNotifier extends ChangeNotifier {
-  //   consumerState(){
-  // }
-  final List<String> alarmList = [];
+  AlarmChangeNotifier() {
+    onInit();
+  }
+  Future<void> onInit() async {
+    alarmList = await SpController().getAlarmList();
+    notifyListeners();
+  }
 
-  //  Map<String, dynamic> get myMap => _myMap;
+  List<dynamic> alarmList = [];
+
   void add(String value) {
     alarmList.add(value);
     notifyListeners();
@@ -35,16 +43,33 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
   final fileName = StateProvider<String>((ref) => '');
-  final alarmSettings = AlarmSettings(
-    id: 12,
-    dateTime: DateTime.now().add(const Duration(minutes: 1)),
-    assetAudioPath: 'assets/alarm.mp3',
-    loopAudio: true,
-    vibrate: true,
-    volumeMax: true,
-    fadeDuration: 3.0,
-    notificationTitle: 'This is the title',
-    notificationBody: 'This is the body',
-    enableNotificationOnKill: true,
-  );
+  String pickedTime = '';
+  String repeatTypeValue = '';
+  bool vibrationSwitchState = true;
+  String fileNameValue = '';
+  bool switchStateValue = true;
+  void formattedTime(time) {
+    pickedTime = DateFormat('hh:mm a').format(time);
+    notifyListeners();
+  }
+
+  void saveAlarm(context) async {
+    alarmList.clear();
+    // await SpController().deleteAllData();
+    Map<String, dynamic> alarmDetails = {
+      "time": pickedTime,
+      "repeat": repeatTypeValue,
+      "vibration": vibrationSwitchState,
+      "ringtone": fileNameValue,
+      "alarmSwitch": switchProvider
+    };
+    // alarmList.add(alarmDetails);
+    String encodedMap = json.encode(alarmDetails);
+    await SpController().saveAlarmDetails(encodedMap);
+    await SpController().saveAlarmList(alarmDetails);
+    alarmList = await SpController().getAlarmList();
+    log(alarmList.toString());
+    notifyListeners();
+    Navigator.pop(context);
+  }
 }

@@ -36,7 +36,7 @@ class CommonAlertDialog extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: cWhiteColor,
+              color: cBackgroundTintColor,
               height: kDialogTitleContainerHeight,
               width: width,
               child: Stack(
@@ -47,7 +47,7 @@ class CommonAlertDialog extends StatelessWidget {
                       child: Text(
                         title.toString(),
                         textAlign: TextAlign.center,
-                        style: semiBold16TextStyle(cTextPrimaryColor),
+                        style: semiBold16TextStyle(cWhiteColor),
                       ),
                     ),
                   if (hasCloseBtn)

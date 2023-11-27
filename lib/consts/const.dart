@@ -19,6 +19,7 @@ const Color cTransparentColor = Colors.transparent;
 const Color cBlackColor = Colors.black;
 const Color cPrimaryTint3Color = Color(0xFFD3F0FF);
 const Color cBackgroundColor = Color(0XFF0F0D0D);
+const Color cBackgroundTintColor = Color(0XFF191919);
 
 //* new color
 const Color cPrimaryTintColor = Color(0xFFD8DEFF);
@@ -54,6 +55,9 @@ const double h28 = 28.0;
 const double h12 = 12.0;
 const double h14 = 14.0;
 const double h16 = 16.0;
+const double h18 = 18.0;
+const double h20 = 20.0;
+const double h24 = 24.0;
 
 const double kDialogTitleContainerHeight = 35;
 const double kButtonHeight = 50;
@@ -87,8 +91,16 @@ TextStyle semiBold16TextStyle(Color color) {
   return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h16, 2), color: color);
 }
 
+TextStyle semiBold18TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h18, 2), color: color);
+}
+
 TextStyle semiBold20TextStyle(Color color) {
-  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(20, 2), color: color);
+  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h20, 2), color: color);
+}
+
+TextStyle semiBold24TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h24, 2), color: color);
 }
 
 TextStyle regular12TextStyle(Color color) {

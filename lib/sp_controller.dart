@@ -61,11 +61,8 @@ class SpController {
     String? data = preferences.getString(kAlarmList);
     List alarmList = (data == null) ? [] : json.decode(data);
 
-    // Check if the index is within the range of the list
     if (index >= 0 && index < alarmList.length) {
-      // Remove the alarm at the specified index
       alarmList.removeAt(index);
-      // Update the state of the alarms in the list
       for (int i = 0; i < alarmList.length; i++) {
         if (i >= index) {
           alarmList[i]['id'] = i;

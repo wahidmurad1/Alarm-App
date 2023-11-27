@@ -71,7 +71,8 @@ class AlarmPage extends ConsumerWidget {
                           return const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
                             child: Divider(
-                              color: cWhiteColor,
+                              color: cLineColor,
+                              thickness: 0.5,
                             ),
                           );
                         },
@@ -82,7 +83,7 @@ class AlarmPage extends ConsumerWidget {
                               alarmChangeNotifier.deleteAlarmAlertDialog(context: context, index: index);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                              padding: const EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
@@ -137,7 +138,7 @@ class AlarmPage extends ConsumerWidget {
                         padding: const EdgeInsets.only(bottom: 40),
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: cWhiteColor,
+                              backgroundColor: cPrimaryColor,
                             ),
                             onPressed: () {
                               ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
@@ -148,7 +149,7 @@ class AlarmPage extends ConsumerWidget {
                             },
                             child: Text(
                               'New Alarm',
-                              style: semiBold16TextStyle(cPrimaryColor),
+                              style: semiBold16TextStyle(cWhiteColor),
                             )),
                       ))
                   : const SizedBox(),

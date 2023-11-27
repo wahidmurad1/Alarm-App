@@ -107,15 +107,3 @@ TextStyle regular12TextStyle(Color color) {
   return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h12, 2), color: color);
 }
 
-TextStyle regular14TextStyle(Color color) {
-  return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h14, 2), color: color);
-}
-
-// show alert dialog
-Future<dynamic> showAlertDialog({context, child}) {
-  return showDialog(
-    barrierDismissible: false,
-    context: context,
-    builder: (ctx) => child,
-  );
-}

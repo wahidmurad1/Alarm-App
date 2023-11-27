@@ -104,39 +104,4 @@ class AlarmChangeNotifier extends ChangeNotifier {
   void updateState() {
     notifyListeners();
   }
-
-  // void deleteAlarmAlertDialog({required BuildContext context, required int index}) {
-  //   showAlertDialog(
-  //     context: context,
-  //     child: CommonAlertDialog(
-  //       hasCloseBtn: true,
-  //       onClose: () => Navigator.pop(context),
-  //       addContent: const Text('Are you sure you want to delete this alarm'),
-  //       title: 'Confirmation',
-  //       actions: [
-  //         CustomElevatedButton(
-  //           label: 'Delete',
-  //           onPressed: () {
-  //             SpController().deleteAlarm(index);
-  //             // for (int i = 0; i < alarmList.length; i++) {
-  //             //   alarmList.removeAt(index);
-  //             //   notifyListeners();
-  //             // }
-  //             if (index >= 0 && index < alarmList.length) {
-  //               // Remove the alarm at the specified index
-  //               alarmList.removeAt(index);
-  //               notifyListeners();
-  //             }
-
-  //             Navigator.pop(context);
-  //           },
-  //           buttonWidth: width * .45,
-  //           buttonHeight: 40,
-  //           buttonColor: cRedAccentColor,
-  //         ),
-  //         kH10sizedBox,
-  //       ],
-  //     ),
-  //   );
-  // }
 }

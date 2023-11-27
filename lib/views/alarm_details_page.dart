@@ -17,7 +17,7 @@ class AlarmDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
     alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
     return Scaffold(
       appBar: AppBar(
@@ -65,6 +65,7 @@ class AlarmDetailsPage extends ConsumerWidget {
                 mode: CupertinoDatePickerMode.time,
                 onDateTimeChanged: (value) {
                   ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
+                  alarmChangeNotifier.pickTime(value);
                   alarmChangeNotifier.formattedTime(value);
                   ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
                 },

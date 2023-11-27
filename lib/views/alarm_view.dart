@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/alarm_change_notifier.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
@@ -9,16 +7,15 @@ import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class AlarmView extends ConsumerWidget {
   AlarmView({super.key});
-  // final NotificationServices notificationServices = NotificationServices();
   final AlarmChangeNotifier alarmChange = AlarmChangeNotifier();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    // log('Alarm view ${alarmChangeNotifier.alarmList.toString()}');
+    final alarmRingNotifier = ref.watch(alarmRingNotifierProvider);
+  // alarmRingNotifier.context = context;
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -77,99 +74,50 @@ class AlarmView extends ConsumerWidget {
                         },
                         itemBuilder: (context, index) {
                           final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    alarmChangeNotifier.alarmList[index]['time'].toString(),
-                                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 50,
-                                    child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      child: CupertinoSwitch(
-                                        activeColor: Colors.blue,
-                                        trackColor: const Color.fromARGB(255, 220, 218, 218),
-                                        value: switchState,
-                                        onChanged: (value) async {
-                                          ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
-                                          // alarmChangeNotifier.switchStateValue = ref.read(alarmChangeNotifier.switchProvider(index).notifier).state;
-                                          alarmChangeNotifier.alarmList[index]["alarmSwitch"] = value;
-                                          // alarmChangeNotifier.saveAlarm(context);
-                                          //Extra added
-                                          DateTime now = DateTime.now();
-                                          String formattedTime = DateFormat('hh:mm a').format(now);
-                                          // print(formattedTime);
-                                          if (ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
-                                            final alarmSettings = AlarmSettings(
-                                              id: index,
-                                              dateTime: formattedTime == alarmChangeNotifier.alarmList[index]
-                                                  ? DateTime.now().add(const Duration(minutes: 1))
-                                                  : DateTime.now(), // Set the dateTime
-                                              assetAudioPath: 'assets/alarm.mp3', // Set the assetAudioPath
-                                              loopAudio: true,
-                                              vibrate: true,
-                                              volumeMax: true,
-                                              // fadeDuration: 3.0,
-                                              notificationTitle: 'This is the title',
-                                              notificationBody: 'This is the body',
-                                              enableNotificationOnKill: true,
-                                            );
-
-                                            // Set the alarm
-                                            Alarm.set(alarmSettings: alarmSettings);
-                                          } else {
+                          return InkWell(
+                            onLongPress: () {
+                              alarmChangeNotifier.deleteAlarmAlertDialog(context: context, index: index);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      alarmChangeNotifier.alarmList[index]['time'].toString(),
+                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 50,
+                                      child: FittedBox(
+                                        fit: BoxFit.cover,
+                                        child: CupertinoSwitch(
+                                          activeColor: Colors.blue,
+                                          trackColor: const Color.fromARGB(255, 220, 218, 218),
+                                          value: switchState,
+                                          onChanged: (value) async {
+                                            ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
+                                           if(ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == false){
                                             await Alarm.stop(index);
-                                          }
-                                          // String timeString = alarmChangeNotifier.alarmList[index];
-                                          // List<String> timeParts = timeString.split(':');
-
-                                          // DateTime selectedTime = DateTime(
-                                          //   DateTime.now().year,
-                                          //   DateTime.now().month,
-                                          //   DateTime.now().day,
-                                          //   int.parse(timeParts[0]),
-                                          //   int.parse(timeParts[1]),
-                                          // );
-                                          // DateTime currentTime = DateTime.now();
-
-                                          // if (selectedTime.isAfter(currentTime)) {
-                                          //   final alarmSettings = AlarmSettings(
-                                          //     id: index, // Set the id to the index of the item in the list
-                                          //     dateTime: selectedTime, // Set the dateTime to the user's selected time
-                                          //     assetAudioPath: 'assets/alarm.mp3', // Set the assetAudioPath
-                                          //     loopAudio: true,
-                                          //     vibrate: true,
-                                          //     volumeMax: true,
-                                          //     fadeDuration: 3.0,
-                                          //     notificationTitle: 'This is the title',
-                                          //     notificationBody: 'This is the body',
-                                          //     enableNotificationOnKill: true,
-                                          //   );
-
-                                          //   // Set the alarm
-                                          //   Alarm.set(alarmSettings: alarmSettings);
-                                          // } else {
-                                          //   // Handle the case where the selected time is in the past
-                                          // }
-                                        },
+                                           }
+                                             
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           );
                         },
                       ),
                     ),
+             
               ref.watch(alarmChangeNotifierProvider).alarmList.isEmpty
                   ? SizedBox(
                       width: width - 40,

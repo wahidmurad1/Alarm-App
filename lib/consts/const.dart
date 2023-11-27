@@ -54,6 +54,9 @@ const double h12 = 12.0;
 const double h14 = 14.0;
 const double h16 = 16.0;
 
+const double kDialogTitleContainerHeight = 35;
+const double kButtonHeight = 50;
+
 //* info: remove extra padding from TextButton
 ButtonStyle? kTextButtonStyle = TextButton.styleFrom(
   padding: EdgeInsets.zero,
@@ -89,4 +92,13 @@ TextStyle regular12TextStyle(Color color) {
 
 TextStyle regular14TextStyle(Color color) {
   return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h14, 2), color: color);
+}
+
+// show alert dialog
+Future<dynamic> showAlertDialog({context, child}) {
+  return showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (ctx) => child,
+  );
 }

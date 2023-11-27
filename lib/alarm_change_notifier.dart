@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:alarm/alarm.dart';
+import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/sp_controller.dart';
+import 'package:alarm_app/widgets/common_alert_dialog.dart';
+import 'package:alarm_app/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -48,8 +52,19 @@ class AlarmChangeNotifier extends ChangeNotifier {
   bool vibrationSwitchState = true;
   String fileNameValue = '';
   bool switchStateValue = true;
+  DateTime selectedDateTime = DateTime.now();
+  BuildContext? context;
   void formattedTime(time) {
     pickedTime = DateFormat('hh:mm a').format(time);
+    notifyListeners();
+  }
+
+  void pickTime(time) {
+    selectedDateTime = time;
+    if (selectedDateTime.isBefore(DateTime.now())) {
+      selectedDateTime = selectedDateTime.add(const Duration(days: 1));
+    }
+    pickedTime = DateFormat('HH:mm a').format(time);
     notifyListeners();
   }
 
@@ -61,7 +76,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
       "repeat": repeatTypeValue,
       "vibration": vibrationSwitchState,
       "ringtone": fileNameValue,
-      "alarmSwitch": switchProvider
+      "alarmSwitch": switchStateValue
     };
     // alarmList.add(alarmDetails);
     String encodedMap = json.encode(alarmDetails);
@@ -69,7 +84,60 @@ class AlarmChangeNotifier extends ChangeNotifier {
     await SpController().saveAlarmList(alarmDetails);
     alarmList = await SpController().getAlarmList();
     log(alarmList.toString());
-    notifyListeners();
     Navigator.pop(context);
+    final alarmSettings = AlarmSettings(
+      id: alarmList.length - 1,
+      dateTime: selectedDateTime,
+      assetAudioPath: 'assets/alarm.mp3',
+      loopAudio: true,
+      vibrate: vibrationSwitchState,
+      volumeMax: true,
+      fadeDuration: 3.0,
+      notificationTitle: 'This is the title',
+      notificationBody: 'This is the body',
+      enableNotificationOnKill: true,
+    );
+    Alarm.set(alarmSettings: alarmSettings);
+    notifyListeners();
+  }
+
+  void deleteAlarmAlertDialog({required BuildContext context, required int index}) {
+    showAlertDialog(
+      context: context,
+      child: CommonAlertDialog(
+        hasCloseBtn: true,
+        onClose: () => Navigator.pop(context),
+        addContent: const Text('Are you sure you want to delete this alarm'),
+        title: 'Confirmation',
+        actions: [
+          CustomElevatedButton(
+            label: 'Delete',
+            onPressed: () {
+              SpController().deleteAlarm(index);
+              // for (int i = 0; i < alarmList.length; i++) {
+              //   alarmList.removeAt(index);
+              //   notifyListeners();
+              // }
+              if (index >= 0 && index < alarmList.length) {
+                // Remove the alarm at the specified index
+                alarmList.removeAt(index);
+                // Update the state of the alarms in the list
+                for (int i = 0; i < alarmList.length; i++) {
+                  if (i >= index) {
+                    alarmList[i]['id'] = i;
+                  }
+                }
+                notifyListeners();
+              }
+              Navigator.pop(context);
+            },
+            buttonWidth: width * .45,
+            buttonHeight: 40,
+            buttonColor: cRedAccentColor,
+          ),
+          kH10sizedBox,
+        ],
+      ),
+    );
   }
 }

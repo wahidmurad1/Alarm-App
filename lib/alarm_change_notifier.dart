@@ -46,11 +46,11 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final customDaysActionProvider = StateProvider.family<String, int>((ref, index) => '');
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
-  final fileName = StateProvider<String>((ref) => '');
   String pickedTime = '';
   String repeatTypeValue = '';
   bool vibrationSwitchState = true;
-  String fileNameValue = '';
+  final ringtoneName = StateProvider<String>((ref) => '');
+  String ringtoneNameValue = '';
   bool switchStateValue = true;
   DateTime selectedDateTime = DateTime.now();
   BuildContext? context;
@@ -75,7 +75,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
       "time": pickedTime,
       "repeat": repeatTypeValue,
       "vibration": vibrationSwitchState,
-      "ringtone": fileNameValue,
+      "ringtone": ringtoneNameValue,
       "alarmSwitch": switchStateValue
     };
     // alarmList.add(alarmDetails);
@@ -88,14 +88,14 @@ class AlarmChangeNotifier extends ChangeNotifier {
     final alarmSettings = AlarmSettings(
       id: alarmList.length - 1,
       dateTime: selectedDateTime,
-      assetAudioPath: 'assets/alarm.mp3',
+      assetAudioPath: ringtoneNameValue == "" ? 'assets/alarm.mp3' : ringtoneNameValue,
       loopAudio: true,
       vibrate: vibrationSwitchState,
       volumeMax: true,
       fadeDuration: 3.0,
-      notificationTitle: 'This is the title',
-      notificationBody: 'This is the body',
-      enableNotificationOnKill: true,
+      notificationTitle: 'Alarm',
+      notificationBody: 'This is the Alarm',
+      enableNotificationOnKill: false,
     );
     Alarm.set(alarmSettings: alarmSettings);
     notifyListeners();
@@ -121,14 +121,9 @@ class AlarmChangeNotifier extends ChangeNotifier {
               if (index >= 0 && index < alarmList.length) {
                 // Remove the alarm at the specified index
                 alarmList.removeAt(index);
-                // Update the state of the alarms in the list
-                for (int i = 0; i < alarmList.length; i++) {
-                  if (i >= index) {
-                    alarmList[i]['id'] = i;
-                  }
-                }
                 notifyListeners();
               }
+
               Navigator.pop(context);
             },
             buttonWidth: width * .45,

@@ -18,6 +18,7 @@ const Color cRedAccentColor = Color(0xFFF76554);
 const Color cTransparentColor = Colors.transparent;
 const Color cBlackColor = Colors.black;
 const Color cPrimaryTint3Color = Color(0xFFD3F0FF);
+const Color cBackgroundColor = Color(0XFF0F0D0D);
 
 //* new color
 const Color cPrimaryTintColor = Color(0xFFD8DEFF);
@@ -84,6 +85,10 @@ TextStyle semiBold14TextStyle(Color color) {
 
 TextStyle semiBold16TextStyle(Color color) {
   return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(h16, 2), color: color);
+}
+
+TextStyle semiBold20TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w600, fontSize: screenWiseSize(20, 2), color: color);
 }
 
 TextStyle regular12TextStyle(Color color) {

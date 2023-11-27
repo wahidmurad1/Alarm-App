@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
-  AlarmDetailsPage({
+  const AlarmDetailsPage({
     super.key,
   });
   // final NotificationServices notificationServices = NotificationServices();
@@ -40,10 +40,8 @@ class AlarmDetailsPage extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
-                alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
+                // alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
                 alarmChangeNotifier.saveAlarm(context);
-                // SpController().deleteAllData();
-                // SpController().getAlarmList();
               },
               icon: const Icon(
                 Icons.check,
@@ -222,8 +220,9 @@ class AlarmDetailsPage extends ConsumerWidget {
                     // print(file.name);
                     // .watch(alarmChangeNotifier) = file.name;
                     // ref.read(alarmChangeNotifier.fileName) = file.name;
-                    ref.read(alarmChangeNotifier.fileName.notifier).state = file.name;
-                    alarmChangeNotifier.fileNameValue = file.name;
+                    ref.read(alarmChangeNotifier.ringtoneName.notifier).state = file.name;
+                    ref.read(alarmChangeNotifier.ringtoneName.notifier).state = file.path.toString();
+                    alarmChangeNotifier.ringtoneNameValue = file.path.toString();
                     // log(alarmChangeNotifier.fileNameValue);
                     //  openFile(file);
                   },
@@ -236,7 +235,7 @@ class AlarmDetailsPage extends ConsumerWidget {
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                         const Spacer(),
-                        Text(ref.watch(alarmChangeNotifier.fileName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.fileName)),
+                        Text(ref.watch(alarmChangeNotifier.ringtoneName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.ringtoneName)),
                         const Icon(
                           Icons.keyboard_arrow_right_outlined,
                           size: 28,

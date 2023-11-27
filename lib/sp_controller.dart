@@ -56,34 +56,6 @@ class SpController {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove(kAlarmList);
   }
-
-//   Future<void> deleteAlarm(int index) async {
-//  SharedPreferences preferences = await SharedPreferences.getInstance();
-//  String? data = preferences.getString(kAlarmList);
-//  List alarmList = (data == null) ? [] : json.decode(data);
-//  alarmList.removeAt(index);
-//  String encodeData = json.encode(alarmList);
-//  await preferences.setString(kAlarmList, encodeData);
-// }
-  // Future<void> deleteAlarm(int index) async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   String? data = preferences.getString(kAlarmList);
-  //   List alarmList = (data == null) ? [] : json.decode(data);
-
-  //   // Remove the alarm at the specified index
-  //   alarmList.removeAt(index);
-
-  //   // Update the state of the alarms in the list
-  //   for (int i = 0; i < alarmList.length; i++) {
-  //     if (i >= index) {
-  //       alarmList[i]['id'] = i;
-  //     }
-  //   }
-
-  //   // Encode the updated list and save it back to SharedPreferences
-  //   String encodeData = json.encode(alarmList);
-  //   await preferences.setString(kAlarmList, encodeData);
-  // }
   Future<void> deleteAlarm(int index) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? data = preferences.getString(kAlarmList);

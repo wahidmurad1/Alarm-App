@@ -8,21 +8,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AlarmView extends ConsumerWidget {
-  AlarmView({super.key});
+class AlarmPage extends ConsumerWidget {
+  AlarmPage({super.key});
   final AlarmChangeNotifier alarmChange = AlarmChangeNotifier();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
     final alarmRingNotifier = ref.watch(alarmRingNotifierProvider);
-  // alarmRingNotifier.context = context;
+    // alarmRingNotifier.context = context;
     return Container(
       color: Colors.white,
       child: SafeArea(
         top: false,
         child: Scaffold(
+          backgroundColor: cBackgroundColor,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: cBackgroundColor,
             elevation: 0,
             title: const Text(
               'Alarm',
@@ -59,7 +60,7 @@ class AlarmView extends ConsumerWidget {
                       child: Center(
                         child: Text(
                           'No alarm',
-                          style: semiBold16TextStyle(cBlackColor),
+                          style: semiBold16TextStyle(cWhiteColor),
                         ),
                       ),
                     )
@@ -69,11 +70,13 @@ class AlarmView extends ConsumerWidget {
                         separatorBuilder: (BuildContext context, int index) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Divider(),
+                            child: Divider(
+                              color: cWhiteColor,
+                            ),
                           );
                         },
                         itemBuilder: (context, index) {
-                          final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
+                          // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                           return InkWell(
                             onLongPress: () {
                               alarmChangeNotifier.deleteAlarmAlertDialog(context: context, index: index);
@@ -87,9 +90,20 @@ class AlarmView extends ConsumerWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      alarmChangeNotifier.alarmList[index]['time'].toString(),
-                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          alarmChangeNotifier.alarmList[index]['time'].toString(),
+                                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: cWhiteColor),
+                                        ),
+                                        Text(
+                                          alarmChangeNotifier.alarmList[index]['repeat'].toString() == ''
+                                              ? 'Ring once'
+                                              : alarmChangeNotifier.alarmList[index]['repeat'].toString(),
+                                          style: semiBold16TextStyle(cTextSecondaryColor),
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(
                                       width: 50,
@@ -98,13 +112,12 @@ class AlarmView extends ConsumerWidget {
                                         child: CupertinoSwitch(
                                           activeColor: Colors.blue,
                                           trackColor: const Color.fromARGB(255, 220, 218, 218),
-                                          value: switchState,
+                                          value: ref.watch(alarmChangeNotifier.switchProvider(index)),
                                           onChanged: (value) async {
                                             ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
-                                           if(ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == false){
-                                            await Alarm.stop(index);
-                                           }
-                                             
+                                            if (ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == false) {
+                                              await Alarm.stop(index);
+                                            }
                                           },
                                         ),
                                       ),
@@ -117,25 +130,27 @@ class AlarmView extends ConsumerWidget {
                         },
                       ),
                     ),
-             
               ref.watch(alarmChangeNotifierProvider).alarmList.isEmpty
                   ? SizedBox(
                       width: width - 40,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: cWhiteColor,
-                          ),
-                          onPressed: () {
-                            ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
-                            ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
-                            ref.invalidate(alarmChangeNotifier.alarmActionSelect);
-                            ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
-                          },
-                          child: Text(
-                            'New Alarm',
-                            style: semiBold16TextStyle(cPrimaryColor),
-                          )))
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 40),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: cWhiteColor,
+                            ),
+                            onPressed: () {
+                              ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
+                              ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
+                              ref.invalidate(alarmChangeNotifier.alarmActionSelect);
+                              ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
+                            },
+                            child: Text(
+                              'New Alarm',
+                              style: semiBold16TextStyle(cPrimaryColor),
+                            )),
+                      ))
                   : const SizedBox(),
             ],
           ),

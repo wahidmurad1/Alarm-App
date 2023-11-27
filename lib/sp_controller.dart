@@ -76,4 +76,13 @@ class SpController {
       log('Index out of range');
     }
   }
+ Future<void> updateAlarmList(int index, Map<String, dynamic> newAlarm) async {
+ SharedPreferences preferences = await SharedPreferences.getInstance();
+ List previousAlarms = await getAlarmList();
+ previousAlarms[index] = json.encode(newAlarm);
+ String encodeData = json.encode(previousAlarms);
+ await preferences.setString(kAlarmList, encodeData);
+}
+
+
 }

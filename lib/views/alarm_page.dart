@@ -1,5 +1,6 @@
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/alarm_change_notifier.dart';
+import 'package:alarm_app/sp_controller.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/consts/const.dart';
 
@@ -7,6 +8,7 @@ import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AlarmPage extends ConsumerWidget {
   AlarmPage({super.key});
@@ -25,6 +27,7 @@ class AlarmPage extends ConsumerWidget {
           appBar: AppBar(
             backgroundColor: cBackgroundColor,
             elevation: 0,
+            centerTitle: true,
             title: const Text(
               'Alarm',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
@@ -78,10 +81,23 @@ class AlarmPage extends ConsumerWidget {
                         },
                         itemBuilder: (context, index) {
                           // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
-                          return InkWell(
-                            onLongPress: () {
-                              alarmChangeNotifier.deleteAlarmAlertDialog(context: context, index: index);
-                            },
+                          return Slidable(
+                            endActionPane: ActionPane(motion: const BehindMotion(), children: [
+                              SlidableAction(
+                                  backgroundColor: cRedAccentColor,
+                                  icon: Icons.delete,
+                                  label: 'Delete',
+                                  onPressed: (context) {
+                                    SpController().deleteAlarm(index);
+                                    ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = true;
+                                    if (index >= 0 && index < alarmChangeNotifier.alarmList.length) {
+                                      alarmChangeNotifier.alarmList.removeAt(index);
+                                      alarmChangeNotifier.updateState();
+                                    }
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Alarm deleted")));
+                                  }),
+                              SlidableAction(backgroundColor: cBlueAccent, icon: Icons.close, label: 'Cancel', onPressed: (context) {}),
+                            ]),
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
                               child: Container(

@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
   const AlarmDetailsPage({
@@ -18,7 +17,7 @@ class AlarmDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    // alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
     return Scaffold(
       backgroundColor: cBackgroundColor,
       appBar: AppBar(
@@ -55,20 +54,65 @@ class AlarmDetailsPage extends ConsumerWidget {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
+            InkWell(
+              onTap: () {
+                ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = ref.watch(alarmChangeNotifier.clockStyleState);
+                commonBottomSheet(
+                    bottomSheetHeight: 150,
+                    context: context,
+                    content: const ClockStyleContent(),
+                    onPressCloseButton: () {
+                      Navigator.pop(context);
+                    },
+                    onPressRightButton: () {
+                      ref.read(alarmChangeNotifier.clockStyleState.notifier).state = ref.watch(alarmChangeNotifier.tempClockStyleState);
+                      alarmChangeNotifier.clockStyleValue = ref.watch(alarmChangeNotifier.clockStyleState);
+                      Navigator.pop(context);
+                    },
+                    rightText: 'Done',
+                    rightTextStyle: semiBold16TextStyle(cPrimaryColor),
+                    title: 'Clock Style',
+                    isRightButtonShow: true);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  children: [
+                    Text(
+                      'Clock Style',
+                      style: semiBold18TextStyle(cWhiteColor),
+                    ),
+                    const Spacer(),
+                    Text(
+                      ref.watch(alarmChangeNotifier.clockStyleState),
+                      style: semiBold16TextStyle(cWhiteColor),
+                    ),
+                    const Icon(
+                      Icons.keyboard_arrow_right_outlined,
+                      size: 28,
+                      color: cWhiteColor,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            const Divider(
+              thickness: 0.5,
+              color: cLineColor,
+            ),
             SizedBox(
               height: 180,
               child: CupertinoTheme(
                 data: const CupertinoThemeData(brightness: Brightness.dark),
                 child: CupertinoDatePicker(
                   backgroundColor: cBackgroundColor,
-                  // itemExtent: 0,
-                  // backgroundColor: cWhiteColor,
                   initialDateTime: DateTime.now(),
                   mode: CupertinoDatePickerMode.time,
+                  use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == 'Analogue' ? false : true,
                   onDateTimeChanged: (value) {
                     ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
                     alarmChangeNotifier.pickTime(value);
-                    alarmChangeNotifier.formattedTime(value);
+                    // alarmChangeNotifier.formattedTime(value);
                     ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
                   },
                 ),
@@ -77,10 +121,6 @@ class AlarmDetailsPage extends ConsumerWidget {
             const SizedBox(
               height: 40,
             ),
-            // Text(
-            //   DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)),
-            //   style: semiBold24TextStyle(cWhiteColor),
-            // ),
             const SizedBox(
               height: 20,
             ),
@@ -269,6 +309,60 @@ class AlarmDetailsPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ClockStyleContent extends ConsumerWidget {
+  const ClockStyleContent({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+    return Column(
+      children: [
+        ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: alarmChangeNotifier.clockStyle.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: CustomListTile(
+                title: alarmChangeNotifier.clockStyle[index].toString(),
+                titleTextStyle: semiBold16TextStyle(cBlackColor),
+                trailing: Consumer(
+                  builder: (context, ref, child) {
+                    return CustomRadioButton(
+                      onChanged: () {
+                        ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = alarmChangeNotifier.clockStyle[index];
+                        // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
+                        // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                        //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                        // } else {
+                        //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                        // }
+                      },
+                      isSelected: ref.watch(alarmChangeNotifier.tempClockStyleState) == alarmChangeNotifier.clockStyle[index],
+                    );
+                  },
+                ),
+                itemColor: ref.watch(alarmChangeNotifier.tempClockStyleState) == alarmChangeNotifier.clockStyle[index] ? cPrimaryTint3Color : cWhiteColor,
+                onPressed: () {
+                  ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = alarmChangeNotifier.clockStyle[index];
+                  // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                  // } else {
+                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                  // }
+                },
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

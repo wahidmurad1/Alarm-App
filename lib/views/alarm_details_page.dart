@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
   const AlarmDetailsPage({
@@ -17,7 +18,11 @@ class AlarmDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    // alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    if (alarmChangeNotifier.clockStyleValue == '12 Hours') {
+      alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    } else {
+      alarmChangeNotifier.pickedTime = DateFormat('hh:mm').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    }
     return Scaffold(
       backgroundColor: cBackgroundColor,
       appBar: AppBar(
@@ -108,7 +113,7 @@ class AlarmDetailsPage extends ConsumerWidget {
                   backgroundColor: cBackgroundColor,
                   initialDateTime: DateTime.now(),
                   mode: CupertinoDatePickerMode.time,
-                  use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == 'Analogue' ? false : true,
+                  use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == '12 Hours' ? false : true,
                   onDateTimeChanged: (value) {
                     ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
                     alarmChangeNotifier.pickTime(value);

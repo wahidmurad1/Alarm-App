@@ -24,7 +24,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
 
   final List<String> repeatType = ['Ring once', 'Everyday', 'Sunday-Thusday', 'Custom'];
   final List<String> customDays = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednusday', 'Thusday', 'Friday'];
-  final List<String> clockStyle = ['Analogue', 'Digital'];
+  final List<String> clockStyle = ['12 Hours', '24 Hours'];
 
   String getDifference(DateTime alarmTime) {
     if (alarmTime.isBefore(DateTime.now())) {
@@ -44,15 +44,15 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final customDaysActionProvider = StateProvider.family<String, int>((ref, index) => '');
   final alarmActionSelect = StateProvider<String>((ref) => '');
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
-  final tempClockStyleState = StateProvider<String>((ref) => 'Analogue');
-  final clockStyleState = StateProvider<String>((ref) => 'Analogue');
+  final tempClockStyleState = StateProvider<String>((ref) => '12 Hours');
+  final clockStyleState = StateProvider<String>((ref) => '12 Hours');
   String pickedTime = '';
   String repeatTypeValue = '';
   bool vibrationSwitchState = true;
   final ringtoneName = StateProvider<String>((ref) => '');
   String ringtoneNameValue = '';
   bool switchStateValue = true;
-  String clockStyleValue = 'Analogue';
+  String clockStyleValue = '12 Hours';
   DateTime selectedDateTime = DateTime.now();
   BuildContext? context;
 
@@ -61,7 +61,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
     if (selectedDateTime.isBefore(DateTime.now())) {
       selectedDateTime = selectedDateTime.add(const Duration(days: 1));
     }
-    if (clockStyleValue == 'Analogue') {
+    if (clockStyleValue == '12 Hours') {
       pickedTime = DateFormat('HH:mm a').format(time);
     } else {
       pickedTime = DateFormat('HH:mm').format(time);

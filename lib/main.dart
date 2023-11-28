@@ -1,4 +1,7 @@
 import 'package:alarm/alarm.dart';
+import 'package:alarm_app/providers.dart';
+import 'package:alarm_app/theme/dark_theme.dart';
+import 'package:alarm_app/theme/light_theme.dart';
 import 'package:alarm_app/views/alarm_page.dart';
 import 'package:alarm_app/consts/const.dart';
 import 'package:flutter/material.dart';
@@ -10,18 +13,20 @@ Future<void> main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
     heightWidthKeyboardValue(context);
     return MaterialApp(
       title: 'Alarm App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: false,
-      ),
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      //   useMaterial3: false,
+      // ),
+      theme: ref.watch(alarmChangeNotifier.themeTypeProvider) == true ? darkTheme : lightTheme,
       debugShowCheckedModeBanner: false,
       home: AlarmPage(),
     );

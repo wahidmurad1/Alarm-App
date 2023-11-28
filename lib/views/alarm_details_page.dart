@@ -24,23 +24,23 @@ class AlarmDetailsPage extends ConsumerWidget {
       alarmChangeNotifier.pickedTime = DateFormat('hh:mm').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
     }
     return Scaffold(
-      backgroundColor: cBackgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: cBackgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.close,
-            color: cWhiteColor,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        title: const Text(
+        title: Text(
           'Add Alarm',
-          style: TextStyle(color: cWhiteColor),
+          style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
         ),
         actions: [
           IconButton(
@@ -48,9 +48,9 @@ class AlarmDetailsPage extends ConsumerWidget {
                 // alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
                 alarmChangeNotifier.saveAlarm(context);
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.check,
-                color: cWhiteColor,
+                color: Theme.of(context).colorScheme.primary,
               )),
         ],
       ),
@@ -85,17 +85,17 @@ class AlarmDetailsPage extends ConsumerWidget {
                   children: [
                     Text(
                       'Clock Style',
-                      style: semiBold18TextStyle(cWhiteColor),
+                      style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                     ),
                     const Spacer(),
                     Text(
                       ref.watch(alarmChangeNotifier.clockStyleState),
-                      style: semiBold16TextStyle(cWhiteColor),
+                      style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.keyboard_arrow_right_outlined,
                       size: 28,
-                      color: cWhiteColor,
+                      color: Theme.of(context).colorScheme.primary,
                     )
                   ],
                 ),
@@ -107,20 +107,17 @@ class AlarmDetailsPage extends ConsumerWidget {
             ),
             SizedBox(
               height: 180,
-              child: CupertinoTheme(
-                data: const CupertinoThemeData(brightness: Brightness.dark),
-                child: CupertinoDatePicker(
-                  backgroundColor: cBackgroundColor,
-                  initialDateTime: DateTime.now(),
-                  mode: CupertinoDatePickerMode.time,
-                  use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == '12 Hours' ? false : true,
-                  onDateTimeChanged: (value) {
-                    ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
-                    alarmChangeNotifier.pickTime(value);
-                    // alarmChangeNotifier.formattedTime(value);
-                    ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
-                  },
-                ),
+              child: CupertinoDatePicker(
+                backgroundColor: Theme.of(context).colorScheme.background,
+                initialDateTime: DateTime.now(),
+                mode: CupertinoDatePickerMode.time,
+                use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == '12 Hours' ? false : true,
+                onDateTimeChanged: (value) {
+                  ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
+                  alarmChangeNotifier.pickTime(value);
+                  // alarmChangeNotifier.formattedTime(value);
+                  ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
+                },
               ),
             ),
             const SizedBox(
@@ -131,7 +128,7 @@ class AlarmDetailsPage extends ConsumerWidget {
             ),
             Text(
               '${alarmChangeNotifier.getDifference(ref.watch(alarmChangeNotifier.pickedTimeProvider))} remaining',
-              style: semiBold20TextStyle(cWhiteColor),
+              style: semiBold20TextStyle(Theme.of(context).colorScheme.primary),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -195,19 +192,19 @@ class AlarmDetailsPage extends ConsumerWidget {
                   children: [
                     Text(
                       'Repeat',
-                      style: semiBold18TextStyle(cWhiteColor),
+                      style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                     ),
                     const Spacer(),
                     ref.watch(alarmChangeNotifier.alarmActionSelect) != ""
                         ? Text(
                             ref.watch(alarmChangeNotifier.alarmActionSelect),
-                            style: semiBold14TextStyle(cWhiteColor),
+                            style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
                           )
                         : const SizedBox(),
-                    const Icon(
+                    Icon(
                       Icons.keyboard_arrow_right_outlined,
                       size: 28,
-                      color: cWhiteColor,
+                      color: Theme.of(context).colorScheme.primary,
                     )
                   ],
                 ),
@@ -217,7 +214,7 @@ class AlarmDetailsPage extends ConsumerWidget {
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Divider(
                 thickness: 0.5,
-                color: cWhiteColor,
+                color: cLineColor,
               ),
             ),
             Padding(
@@ -226,7 +223,7 @@ class AlarmDetailsPage extends ConsumerWidget {
                 children: [
                   Text(
                     'Vibration',
-                    style: semiBold18TextStyle(cWhiteColor),
+                    style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                   ),
                   const Spacer(),
                   Consumer(
@@ -289,14 +286,21 @@ class AlarmDetailsPage extends ConsumerWidget {
                       children: [
                         Text(
                           'Ringtone',
-                          style: semiBold18TextStyle(cWhiteColor),
+                          style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
+                        ),
+                        const SizedBox(
+                          width: 80,
                         ),
                         const Spacer(),
-                        Text(ref.watch(alarmChangeNotifier.ringtoneName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.ringtoneName)),
-                        const Icon(
+                        Text(
+                          ref.watch(alarmChangeNotifier.ringtoneName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.ringtoneName),
+                          style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
+                          overflow: TextOverflow.clip,
+                        ),
+                        Icon(
                           Icons.keyboard_arrow_right_outlined,
                           size: 28,
-                          color: cWhiteColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ],
                     ),

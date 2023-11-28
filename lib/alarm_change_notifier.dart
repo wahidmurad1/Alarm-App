@@ -55,6 +55,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
   String clockStyleValue = '12 Hours';
   DateTime selectedDateTime = DateTime.now();
   BuildContext? context;
+  // bool themeType=true;
+  final themeTypeProvider = StateProvider<bool>((ref) => true);
 
   void pickTime(time) {
     selectedDateTime = time;

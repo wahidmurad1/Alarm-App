@@ -26,6 +26,7 @@ class MyApp extends ConsumerWidget {
       //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       //   useMaterial3: false,
       // ),
+      // themeMode: ThemeMode.system,
       theme: ref.watch(alarmChangeNotifier.themeTypeProvider) == true ? darkTheme : lightTheme,
       debugShowCheckedModeBanner: false,
       home: AlarmPage(),

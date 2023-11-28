@@ -18,11 +18,11 @@ class AlarmDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    if (alarmChangeNotifier.clockStyleValue == '12 Hours') {
-      alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
-    } else {
-      alarmChangeNotifier.pickedTime = DateFormat('hh:mm').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
-    }
+    // if (alarmChangeNotifier.clockStyleValue == '12 Hours') {
+    //   alarmChangeNotifier.pickedTime = DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    // } else {
+    //   alarmChangeNotifier.pickedTime = DateFormat('hh:mm').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    // }
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -276,26 +276,31 @@ class AlarmDetailsPage extends ConsumerWidget {
                     // ref.read(alarmChangeNotifier.fileName) = file.name;
                     ref.read(alarmChangeNotifier.ringtoneName.notifier).state = file.name;
                     ref.read(alarmChangeNotifier.ringtoneName.notifier).state = file.path.toString();
-                    alarmChangeNotifier.ringtoneNameValue = file.path.toString();
+                    var ringtoneNames = file.path.toString().split('file_picker/');
+                    alarmChangeNotifier.ringtoneNameValue = ringtoneNames.last;
+                    ref.read(alarmChangeNotifier.ringtoneName.notifier).state = ringtoneNames.last;
                     // log(alarmChangeNotifier.fileNameValue);
                     //  openFile(file);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
                           'Ringtone',
                           style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                         ),
-                        const SizedBox(
-                          width: 80,
-                        ),
+                        // const SizedBox(
+                        //   width: 80,
+                        // ),
                         const Spacer(),
-                        Text(
-                          ref.watch(alarmChangeNotifier.ringtoneName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.ringtoneName),
-                          style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
-                          overflow: TextOverflow.clip,
+                        Expanded(
+                          child: Text(
+                            ref.watch(alarmChangeNotifier.ringtoneName).toString(),
+                            style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         Icon(
                           Icons.keyboard_arrow_right_outlined,

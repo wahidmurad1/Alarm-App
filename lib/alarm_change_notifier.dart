@@ -12,6 +12,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   }
   Future<void> onInit() async {
     alarmList = await SpController().getAlarmList();
+    // setAllAlarms();
     notifyListeners();
   }
 
@@ -64,12 +65,29 @@ class AlarmChangeNotifier extends ChangeNotifier {
       selectedDateTime = selectedDateTime.add(const Duration(days: 1));
     }
     if (clockStyleValue == '12 Hours') {
-      pickedTime = DateFormat('HH:mm a').format(time);
+      pickedTime = DateFormat('h:mm a').format(time);
+      log(clockStyleValue);
+      log(pickedTime);
     } else {
       pickedTime = DateFormat('HH:mm').format(time);
     }
     notifyListeners();
   }
+
+  // void pickTime(DateTime time) {
+  //   selectedDateTime = time;
+  //   if (selectedDateTime.isBefore(DateTime.now())) {
+  //     selectedDateTime = selectedDateTime.add(const Duration(days: 1));
+  //   }
+  //   if (clockStyleValue == '12 Hours') {
+  //     pickedTime = DateFormat('HH:mm a').format(time);
+  //     print(clockStyleValue);
+  //     print(pickedTime);
+  //   } else {
+  //     pickedTime = DateFormat('HH:mm').format(time);
+  //   }
+  //   notifyListeners();
+  // }
 
   void saveAlarm(context) async {
     alarmList.clear();
@@ -102,6 +120,225 @@ class AlarmChangeNotifier extends ChangeNotifier {
     Alarm.set(alarmSettings: alarmSettings);
     notifyListeners();
   }
+
+  // Future<void> setAllAlarms() async {
+  //   List<dynamic> alarmListDynamic = await SpController().getAlarmList();
+  //   List<Map<String, dynamic>> alarmList = alarmListDynamic.cast<Map<String, dynamic>>();
+
+  //   for (int i = 0; i < alarmList.length; i++) {
+  //     Map<String, dynamic> alarmDetails = alarmList[i];
+  //     DateTime alarmTime;
+  //     if (clockStyleValue == '12 Hours') {
+  //       DateFormat format = DateFormat("h:mm a");
+  //       alarmTime = format.parse(alarmDetails['time']);
+  //     } else {
+  //       DateFormat format = DateFormat("HH:mm");
+  //       alarmTime = format.parse(alarmDetails['time']);
+  //     }
+
+  //     // Ensure alarmTime is in the future
+  //     DateTime now = DateTime.now();
+  //     if (alarmTime.isBefore(now)) {
+  //       alarmTime = alarmTime.add(Duration(days: 1));
+  //     }
+
+  //     switch (alarmDetails['repeat']) {
+  //       case 'Once':
+  //         // Set a single alarm
+  //         final alarmSettings = AlarmSettings(
+  //           id: i,
+  //           dateTime: alarmTime,
+  //           assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+  //           loopAudio: true,
+  //           vibrate: alarmDetails['vibration'],
+  //           volumeMax: true,
+  //           fadeDuration: 3.0,
+  //           notificationTitle: 'Alarm',
+  //           notificationBody: 'This is the Alarm',
+  //           enableNotificationOnKill: false,
+  //         );
+  //         await Alarm.set(alarmSettings: alarmSettings);
+  //         break;
+  //       case 'Everyday':
+  //         // Set an alarm for each day of the week
+  //         for (int j = 0; j < 7; j++) {
+  //           final alarmSettings = AlarmSettings(
+  //             id: i * 10 + j, // Use a unique ID for each alarm
+  //             dateTime: alarmTime.add(Duration(days: j)),
+  //             assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+  //             loopAudio: true,
+  //             vibrate: alarmDetails['vibration'],
+  //             volumeMax: true,
+  //             fadeDuration: 3.0,
+  //             notificationTitle: 'Alarm',
+  //             notificationBody: 'This is the Alarm',
+  //             enableNotificationOnKill: false,
+  //           );
+  //           await Alarm.set(alarmSettings: alarmSettings);
+  //         }
+  //         break;
+  //       case 'Sunday-Thursday':
+  //         // Set an alarm for each day from Saturday to Thursday
+  //         for (int j = 0; j < 6; j++) {
+  //           final alarmSettings = AlarmSettings(
+  //             id: i * 10 + j, // Use a unique ID for each alarm
+  //             dateTime: alarmTime.add(Duration(days: j)),
+  //             assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+  //             loopAudio: true,
+  //             vibrate: alarmDetails['vibration'],
+  //             volumeMax: true,
+  //             fadeDuration: 3.0,
+  //             notificationTitle: 'Alarm',
+  //             notificationBody: 'This is the Alarm',
+  //             enableNotificationOnKill: false,
+  //           );
+  //           await Alarm.set(alarmSettings: alarmSettings);
+  //         }
+  //         break;
+  //       case 'Custom':
+  //         // Handle custom repeat intervals separately
+  //         break;
+  //     }
+  //   }
+  // }
+
+  //   for (int i = 0; i < alarmList.length; i++) {
+  //     Map<String, dynamic> alarmDetails = alarmList[i];
+  //     DateTime alarmTime;
+  //     if (clockStyleValue == '12 Hours') {
+  //       DateFormat format = DateFormat("h:mm a");
+  //       alarmTime = format.parse(alarmDetails['time']);
+  //     } else {
+  //       DateFormat format = DateFormat("HH:mm");
+  //       alarmTime = format.parse(alarmDetails['time']);
+  //     }
+
+  //     switch (alarmDetails['repeat']) {
+  //       case 'Ring once':
+  //         // Set a single alarm
+  //         final alarmSettings = AlarmSettings(
+  //           id: i,
+  //           dateTime: alarmTime,
+  //           assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+  //           loopAudio: true,
+  //           vibrate: alarmDetails['vibration'],
+  //           volumeMax: true,
+  //           fadeDuration: 3.0,
+  //           notificationTitle: 'Alarm',
+  //           notificationBody: 'This is the Alarm',
+  //           enableNotificationOnKill: false,
+  //         );
+  //         await Alarm.set(alarmSettings: alarmSettings);
+  //         break;
+  //       case 'Everyday':
+  //         // Set an alarm for each day of the week
+  //         for (int j = 0; j < 7; j++) {
+  //           final alarmSettings = AlarmSettings(
+  //             id: i * 10 + j, // Use a unique ID for each alarm
+  //             dateTime: alarmTime.add(Duration(days: j)),
+  //             assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+  //             loopAudio: true,
+  //             vibrate: alarmDetails['vibration'],
+  //             volumeMax: true,
+  //             fadeDuration: 3.0,
+  //             notificationTitle: 'Alarm',
+  //             notificationBody: 'This is the Alarm',
+  //             enableNotificationOnKill: false,
+  //           );
+  //           await Alarm.set(alarmSettings: alarmSettings);
+  //         }
+  //         break;
+  //       case 'Sunday-Thursday':
+  //         // Set an alarm for each day from Saturday to Thursday
+  //         for (int j = 0; j < 6; j++) {
+  //           final alarmSettings = AlarmSettings(
+  //             id: i * 10 + j, // Use a unique ID for each alarm
+  //             dateTime: alarmTime.add(Duration(days: j)),
+  //             assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+  //             loopAudio: true,
+  //             vibrate: alarmDetails['vibration'],
+  //             volumeMax: true,
+  //             fadeDuration: 3.0,
+  //             notificationTitle: 'Alarm',
+  //             notificationBody: 'This is the Alarm',
+  //             enableNotificationOnKill: false,
+  //           );
+  //           await Alarm.set(alarmSettings: alarmSettings);
+  //         }
+  //         break;
+  //       case 'Custom':
+  //         // Handle custom repeat intervals separately
+  //         break;
+  //     }
+  //   }
+  // }
+
+//   Future<void> setAllAlarms() async {
+//  List<Map<String, dynamic>> alarmList = await SpController().getAlarmList();
+
+//  for (int i = 0; i < alarmList.length; i++) {
+//    Map<String, dynamic> alarmDetails = alarmList[i];
+//    DateTime alarmTime = DateTime.parse(alarmDetails['time']);
+
+//    switch (alarmDetails['repeat']) {
+//      case 'Once':
+//        // Set a single alarm
+//        final alarmSettings = AlarmSettings(
+//          id: i,
+//          dateTime: alarmTime,
+//          assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+//          loopAudio: true,
+//          vibrate: alarmDetails['vibration'],
+//          volumeMax: true,
+//          fadeDuration: 3.0,
+//          notificationTitle: 'Alarm',
+//          notificationBody: 'This is the Alarm',
+//          enableNotificationOnKill: false,
+//        );
+//        await Alarm.set(alarmSettings: alarmSettings);
+//        break;
+//      case 'Everyday':
+//        // Set an alarm for each day of the week
+//        for (int j = 0; j < 7; j++) {
+//          final alarmSettings = AlarmSettings(
+//            id: i * 10 + j, // Use a unique ID for each alarm
+//            dateTime: alarmTime.add(Duration(days: j)),
+//            assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+//            loopAudio: true,
+//            vibrate: alarmDetails['vibration'],
+//            volumeMax: true,
+//            fadeDuration: 3.0,
+//            notificationTitle: 'Alarm',
+//            notificationBody: 'This is the Alarm',
+//            enableNotificationOnKill: false,
+//          );
+//          await Alarm.set(alarmSettings: alarmSettings);
+//        }
+//        break;
+//      case 'Sat-Thursday':
+//        // Set an alarm for each day from Saturday to Thursday
+//        for (int j = 0; j < 6; j++) {
+//          final alarmSettings = AlarmSettings(
+//            id: i * 10 + j, // Use a unique ID for each alarm
+//            dateTime: alarmTime.add(Duration(days: j)),
+//            assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
+//            loopAudio: true,
+//            vibrate: alarmDetails['vibration'],
+//            volumeMax: true,
+//            fadeDuration: 3.0,
+//            notificationTitle: 'Alarm',
+//            notificationBody: 'This is the Alarm',
+//            enableNotificationOnKill: false,
+//          );
+//          await Alarm.set(alarmSettings: alarmSettings);
+//        }
+//        break;
+//      case 'Custom':
+//        // Handle custom repeat intervals separately
+//        break;
+//    }
+//  }
+// }
 
   void updateState() {
     notifyListeners();

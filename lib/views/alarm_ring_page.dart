@@ -53,6 +53,7 @@ class AlarmRingScreen extends StatelessWidget {
                         if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Ring once') {
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = false;
+                          alarmChangeNotifier.updateState();
                         } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'EveryDay') {
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;

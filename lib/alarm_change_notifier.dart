@@ -58,7 +58,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   bool switchStateValue = true;
   String clockStyleValue = '12 Hours';
   DateTime selectedDateTime = DateTime.now();
-  BuildContext? context;
+   final isSlidable = StateProvider<bool>((ref) => false); 
   // bool themeType=true;
   final themeTypeProvider = StateProvider<bool>((ref) => true);
 
@@ -69,8 +69,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
     }
     if (clockStyleValue == '12 Hours') {
       pickedTime = DateFormat('h:mm a').format(time);
-      log(clockStyleValue);
-      log(pickedTime);
     } else {
       pickedTime = DateFormat('HH:mm').format(time);
     }

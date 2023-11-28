@@ -95,6 +95,7 @@ class AlarmPage extends ConsumerWidget {
                       // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                       return Slidable(
                         endActionPane: ActionPane(motion: const BehindMotion(), children: [
+                          
                           SlidableAction(
                               backgroundColor: cRedAccentColor,
                               icon: Icons.delete,
@@ -144,9 +145,9 @@ class AlarmPage extends ConsumerWidget {
                                         ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                         if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                           Alarm.stop(item[index]['id']);
-                                          item[index]['isAlarmOn'] = false;
+                                          item[index]['alarmSwitch'] = false;
                                         } else {
-                                          item[index]['isAlarmOn'] = true;
+                                          item[index]['alarmSwitch'] = true;
                                           final alarmSettings = AlarmSettings(
                                             id: item[index]['id'],
                                             dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['time']),

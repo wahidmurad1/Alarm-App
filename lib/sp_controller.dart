@@ -84,5 +84,14 @@ class SpController {
  await preferences.setString(kAlarmList, encodeData);
 }
 
+Future<void> saveThemeType(bool value) async {
+ final prefs = await SharedPreferences.getInstance();
+ prefs.setBool('themeType', value);
+}
+Future<bool> loadThemeType() async {
+ final prefs = await SharedPreferences.getInstance();
+ return prefs.getBool('themeType') ?? true;
+}
+
 
 }

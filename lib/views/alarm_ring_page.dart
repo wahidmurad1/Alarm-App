@@ -1,17 +1,17 @@
 import 'package:alarm/alarm.dart';
-import 'package:alarm_app/consts/const.dart';
+import 'package:alarm_app/providers.dart';
+import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
 
 class AlarmRingScreen extends StatelessWidget {
   final AlarmSettings? alarmSettings;
 
-  const AlarmRingScreen({Key? key,  this.alarmSettings})
-      : super(key: key);
+  const AlarmRingScreen({Key? key, this.alarmSettings}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: cPrimaryColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -47,9 +47,42 @@ class AlarmRingScreen extends StatelessWidget {
                   ),
                 ),
                 RawMaterialButton(
-                  onPressed: () {
-                    Alarm.stop(alarmSettings!.id)
-                        .then((_) => Navigator.pop(context));
+                  onPressed: () async {
+                    for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                      if (alarmChangeNotifier.alarmList[i]['id'] == alarmSettings!.id) {
+                        if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Ring once') {
+                          Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                          alarmChangeNotifier.alarmList[i]['alarmSwitch'] = false;
+                        } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'EveryDay') {
+                          Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                          alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
+                          DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['time']);
+                          selectedDateTime = selectedDateTime.add(const Duration(days: 1));
+                          // log(selectedDateTime.toString());
+                          alarmChangeNotifier.alarmList[i]['time'] = selectedDateTime.toString();
+                          final newAlarmSettings = AlarmSettings(
+                            id: alarmChangeNotifier.alarmList[i]['id'],
+                            dateTime: selectedDateTime,
+                            assetAudioPath: alarmChangeNotifier.alarmList[i]['ringtone'],
+                            loopAudio: true,
+                            vibrate: alarmChangeNotifier.alarmList[i]['vibration'],
+                            volumeMax: true,
+                            fadeDuration: 3.0,
+                            notificationTitle: 'This is the title',
+                            notificationBody: 'This is the body',
+                            enableNotificationOnKill: true,
+                          );
+                          Alarm.set(alarmSettings: newAlarmSettings);
+                          await SpController().deleteAllData();
+                          for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                            await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
+                          }
+                          alarmChangeNotifier.alarmList.clear();
+                          alarmChangeNotifier.alarmList = await SpController().getAlarmList();
+                        }
+                      }
+                    }
+                    // Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                   },
                   child: Text(
                     "Stop",

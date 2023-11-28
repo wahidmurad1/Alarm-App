@@ -47,11 +47,14 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final tempAlarmActionSelect = StateProvider<String>((ref) => '');
   final tempClockStyleState = StateProvider<String>((ref) => '12 Hours');
   final clockStyleState = StateProvider<String>((ref) => '12 Hours');
+  final alarmIdState = StateProvider<String>((ref) => '');
   String pickedTime = '';
   String repeatTypeValue = '';
   bool vibrationSwitchState = true;
   final ringtoneName = StateProvider<String>((ref) => '');
   String ringtoneNameValue = '';
+
+  String alarmId = '';
   bool switchStateValue = true;
   String clockStyleValue = '12 Hours';
   DateTime selectedDateTime = DateTime.now();
@@ -74,29 +77,16 @@ class AlarmChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void pickTime(DateTime time) {
-  //   selectedDateTime = time;
-  //   if (selectedDateTime.isBefore(DateTime.now())) {
-  //     selectedDateTime = selectedDateTime.add(const Duration(days: 1));
-  //   }
-  //   if (clockStyleValue == '12 Hours') {
-  //     pickedTime = DateFormat('HH:mm a').format(time);
-  //     print(clockStyleValue);
-  //     print(pickedTime);
-  //   } else {
-  //     pickedTime = DateFormat('HH:mm').format(time);
-  //   }
-  //   notifyListeners();
-  // }
-
   void saveAlarm(context) async {
     alarmList.clear();
+    var id = DateTime.now().millisecondsSinceEpoch % 10000;
     Map<String, dynamic> alarmDetails = {
+      "id": id,
       "time": pickedTime,
       "repeat": repeatTypeValue,
       "vibration": vibrationSwitchState,
       "ringtone": ringtoneNameValue,
-      "alarmSwitch": switchStateValue
+      "alarmSwitch": true
     };
     // alarmList.add(alarmDetails);
     String encodedMap = json.encode(alarmDetails);
@@ -272,73 +262,15 @@ class AlarmChangeNotifier extends ChangeNotifier {
   //     }
   //   }
   // }
-
-//   Future<void> setAllAlarms() async {
-//  List<Map<String, dynamic>> alarmList = await SpController().getAlarmList();
-
-//  for (int i = 0; i < alarmList.length; i++) {
-//    Map<String, dynamic> alarmDetails = alarmList[i];
-//    DateTime alarmTime = DateTime.parse(alarmDetails['time']);
-
-//    switch (alarmDetails['repeat']) {
-//      case 'Once':
-//        // Set a single alarm
-//        final alarmSettings = AlarmSettings(
-//          id: i,
-//          dateTime: alarmTime,
-//          assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
-//          loopAudio: true,
-//          vibrate: alarmDetails['vibration'],
-//          volumeMax: true,
-//          fadeDuration: 3.0,
-//          notificationTitle: 'Alarm',
-//          notificationBody: 'This is the Alarm',
-//          enableNotificationOnKill: false,
-//        );
-//        await Alarm.set(alarmSettings: alarmSettings);
-//        break;
-//      case 'Everyday':
-//        // Set an alarm for each day of the week
-//        for (int j = 0; j < 7; j++) {
-//          final alarmSettings = AlarmSettings(
-//            id: i * 10 + j, // Use a unique ID for each alarm
-//            dateTime: alarmTime.add(Duration(days: j)),
-//            assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
-//            loopAudio: true,
-//            vibrate: alarmDetails['vibration'],
-//            volumeMax: true,
-//            fadeDuration: 3.0,
-//            notificationTitle: 'Alarm',
-//            notificationBody: 'This is the Alarm',
-//            enableNotificationOnKill: false,
-//          );
-//          await Alarm.set(alarmSettings: alarmSettings);
-//        }
-//        break;
-//      case 'Sat-Thursday':
-//        // Set an alarm for each day from Saturday to Thursday
-//        for (int j = 0; j < 6; j++) {
-//          final alarmSettings = AlarmSettings(
-//            id: i * 10 + j, // Use a unique ID for each alarm
-//            dateTime: alarmTime.add(Duration(days: j)),
-//            assetAudioPath: alarmDetails['ringtone'] == "" ? 'assets/alarm.mp3' : alarmDetails['ringtone'],
-//            loopAudio: true,
-//            vibrate: alarmDetails['vibration'],
-//            volumeMax: true,
-//            fadeDuration: 3.0,
-//            notificationTitle: 'Alarm',
-//            notificationBody: 'This is the Alarm',
-//            enableNotificationOnKill: false,
-//          );
-//          await Alarm.set(alarmSettings: alarmSettings);
-//        }
-//        break;
-//      case 'Custom':
-//        // Handle custom repeat intervals separately
-//        break;
-//    }
-//  }
-// }
+  DateTime setAlarmTimeAgain(prevTime) {
+    selectedDateTime = DateTime.parse(prevTime);
+    if (selectedDateTime.isBefore(DateTime.now())) {
+      selectedDateTime = selectedDateTime.add(const Duration(days: 1));
+    }
+    log(selectedDateTime.toString());
+    notifyListeners();
+    return selectedDateTime;
+  }
 
   void updateState() {
     notifyListeners();

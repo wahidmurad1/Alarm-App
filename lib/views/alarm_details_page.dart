@@ -45,6 +45,7 @@ class AlarmDetailsPage extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
+                
                 // alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
                 alarmChangeNotifier.saveAlarm(context);
               },

@@ -1,8 +1,8 @@
+import 'package:alarm/alarm.dart';
 import 'package:alarm_app/alarm_change_notifier.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/consts/const.dart';
-
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,6 @@ class AlarmPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
     final alarmRingNotifier = ref.watch(alarmRingNotifierProvider);
-    // alarmRingNotifier.context = context;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -52,7 +51,7 @@ class AlarmPage extends ConsumerWidget {
                         ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
                         ref.invalidate(alarmChangeNotifier.ringtoneName);
                         // alarmChangeNotifier.ringtoneNameValue = '';
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                       },
                       icon: const Icon(
                         Icons.add,
@@ -90,6 +89,9 @@ class AlarmPage extends ConsumerWidget {
                       );
                     },
                     itemBuilder: (context, index) {
+                      var item = alarmChangeNotifier.alarmList;
+                      // ref.read(alarmChangeNotifier.alarmIdState.notifier).state = alarmChangeNotifier.alarmList.length.toString();
+                      // alarmChangeNotifier.alarmId = ref.watch(alarmChangeNotifier.alarmIdState);
                       // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                       return Slidable(
                         endActionPane: ActionPane(motion: const BehindMotion(), children: [
@@ -121,13 +123,11 @@ class AlarmPage extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      alarmChangeNotifier.alarmList[index]['time'].toString(),
+                                      item[index]['time'].toString(),
                                       style: semiBold24TextStyle(Theme.of(context).colorScheme.primary),
                                     ),
                                     Text(
-                                      alarmChangeNotifier.alarmList[index]['repeat'].toString() == ''
-                                          ? 'Ring once'
-                                          : alarmChangeNotifier.alarmList[index]['repeat'].toString(),
+                                      item[index]['repeat'].toString() == '' ? 'Ring once' : item[index]['repeat'].toString(),
                                       style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
                                     ),
                                   ],
@@ -139,35 +139,29 @@ class AlarmPage extends ConsumerWidget {
                                     child: CupertinoSwitch(
                                       activeColor: Colors.blue,
                                       trackColor: const Color.fromARGB(255, 220, 218, 218),
-                                      value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
-                                      onChanged: (value) async {
+                                      value: item[index]['alarmSwitch'],
+                                      onChanged: (value) {
                                         ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
-                                        // alarmChangeNotifier.alarmList[index]['alarmSwitch'] = value;
-                                        // if (ref.read(alarmChangeNotifier.switchProvider(index).notifier).state ||
-                                        //     alarmChangeNotifier.alarmList[index]['alarmSwitch'] == false) {
-                                        //   await Alarm.stop(index);
-                                        // }
-
-                                        // ref.read(setAlarmNotifier.switchProvider(index).notifier).state = v;
-
-                                        //     if (!ref.read(setAlarmNotifier.switchProvider(index).notifier).state == true) {
-                                        //       Alarm.stop(item[index]['id']);
-                                        //       item[index]['isAlarmOn'] = false;
-                                        //     } else {
-                                        //       item[index]['isAlarmOn'] = true;
-                                        //       final alarmSettings = AlarmSettings(
-                                        //         id: item[index]['id'],
-                                        //         dateTime: setAlarmNotifier.setAlarmTimeAgain(item[index]['dateTime']),
-                                        //         assetAudioPath: 'assets/marimba.mp3',
-                                        //         loopAudio: true,
-                                        //         vibrate: item[index]['vibration'],
-                                        //         volumeMax: true,
-                                        //         fadeDuration: 3.0,
-                                        //         notificationTitle: 'This is the title',
-                                        //         notificationBody: 'This is the body',
-                                        //         enableNotificationOnKill: true,
-                                        //       );
-                                        //       Alarm.set(alarmSettings: alarmSettings);
+                                        if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
+                                          Alarm.stop(item[index]['id']);
+                                          item[index]['isAlarmOn'] = false;
+                                        } else {
+                                          item[index]['isAlarmOn'] = true;
+                                          final alarmSettings = AlarmSettings(
+                                            id: item[index]['id'],
+                                            dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['time']),
+                                            assetAudioPath:
+                                                alarmChangeNotifier.ringtoneNameValue == "" ? 'assets/alarm.mp3' : alarmChangeNotifier.ringtoneNameValue,
+                                            loopAudio: true,
+                                            vibrate: item[index]['vibration'],
+                                            volumeMax: true,
+                                            fadeDuration: 3.0,
+                                            notificationTitle: 'Alarm',
+                                            notificationBody: 'This is the body',
+                                            enableNotificationOnKill: true,
+                                          );
+                                          Alarm.set(alarmSettings: alarmSettings);
+                                        }
                                       },
                                     ),
                                   ),

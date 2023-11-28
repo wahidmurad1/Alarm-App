@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/alarm_change_notifier.dart';
-import 'package:alarm_app/views/alarm_ring_page.dart';
+import 'package:alarm_app/consts/routes.dart';
 import 'package:flutter/material.dart';
 
 class AlarmRingNotifier extends ChangeNotifier {
@@ -18,23 +18,14 @@ class AlarmRingNotifier extends ChangeNotifier {
   AlarmRingNotifier() {
     loadAlarms();
     subscription ??= Alarm.ringStream.stream.listen(
-      (alarmSettings) {
-        navigateToRingScreen(alarmSettings);
-      },
+      (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
   }
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
-    // Get the current context
-    BuildContext? context = alarmChangeNotifier.context;
-    if (context != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AlarmRingScreen(alarmSettings: alarmSettings)),
-      );
-      loadAlarms();
-      notifyListeners();
-    }
+    await goRouter.push(krAlarmRing, extra: alarmSettings);
+    loadAlarms();
+    notifyListeners();
   }
 
   void loadAlarms() {
@@ -79,3 +70,8 @@ class AlarmRingNotifier extends ChangeNotifier {
 //    notifyListeners();
 //  }
 // }
+
+
+
+
+  

@@ -25,10 +25,13 @@ class AlarmPage extends ConsumerWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-            onPressed: () {
+            onPressed: () async {
               ref.read(alarmChangeNotifier.themeTypeProvider.notifier).state = !ref.read(alarmChangeNotifier.themeTypeProvider.notifier).state;
+              alarmChangeNotifier.themeType = ref.watch(alarmChangeNotifier.themeTypeProvider);
+              alarmChangeNotifier.updateState();
+              await SpController().saveThemeType(ref.watch(alarmChangeNotifier.themeTypeProvider));
             },
-            icon: ref.watch(alarmChangeNotifier.themeTypeProvider) == true
+            icon: alarmChangeNotifier.themeType == true
                 ? const Icon(
                     CupertinoIcons.brightness,
                     color: cWhiteColor,
@@ -95,84 +98,94 @@ class AlarmPage extends ConsumerWidget {
                       // ref.read(alarmChangeNotifier.alarmIdState.notifier).state = alarmChangeNotifier.alarmList.length.toString();
                       // alarmChangeNotifier.alarmId = ref.watch(alarmChangeNotifier.alarmIdState);
                       // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
-                      return Slidable(
-                        endActionPane: ActionPane(motion: const BehindMotion(), children: [
-                          SlidableAction(
-                              backgroundColor: cRedAccentColor,
-                              icon: Icons.delete,
-                              label: 'Delete',
-                              onPressed: (context) {
-                                Alarm.stop(item[index]['id']);
-                                log('Alarm deleted and stoped for ${item[index]['id']}');
-                                SpController().deleteAlarm(index);
-                                ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = true;
-                                if (index >= 0 && index < alarmChangeNotifier.alarmList.length) {
-                                  alarmChangeNotifier.alarmList.removeAt(index);
-                                  alarmChangeNotifier.updateState();
-                                }
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Alarm deleted")));
-                              }),
-                          SlidableAction(backgroundColor: cBlueAccent, icon: Icons.close, label: 'Cancel', onPressed: (context) {}),
-                        ]),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item[index]['time'].toString(),
-                                      style: semiBold24TextStyle(Theme.of(context).colorScheme.primary),
-                                    ),
-                                    Text(
-                                      item[index]['repeat'].toString() == '' ? 'Ring once' : item[index]['repeat'].toString(),
-                                      style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 50,
-                                  child: FittedBox(
-                                    fit: BoxFit.cover,
-                                    child: CupertinoSwitch(
-                                      activeColor: Colors.blue,
-                                      trackColor: const Color.fromARGB(255, 220, 218, 218),
-                                      value: item[index]['alarmSwitch'],
-                                      onChanged: (value) {
-                                        ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
-                                        if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
-                                          Alarm.stop(item[index]['id']);
-                                          item[index]['alarmSwitch'] = false;
-                                          log('Hi');
-                                        } else {
-                                          item[index]['alarmSwitch'] = true;
-                                          log('Hlw');
-                                          final alarmSettings = AlarmSettings(
-                                            id: item[index]['id'],
-                                            dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['time']),
-                                            assetAudioPath:
-                                                alarmChangeNotifier.ringtoneNameValue == "" ? 'assets/alarm.mp3' : alarmChangeNotifier.ringtoneNameValue,
-                                            loopAudio: true,
-                                            vibrate: item[index]['vibration'],
-                                            volumeMax: true,
-                                            fadeDuration: 3.0,
-                                            notificationTitle: 'Alarm',
-                                            notificationBody: 'This is the body',
-                                            enableNotificationOnKill: true,
-                                          );
-                                          Alarm.set(alarmSettings: alarmSettings);
-                                        }
-                                      },
+                      return InkWell(
+                        onTap: () async {
+                          if (item[index]['id'] == alarmChangeNotifier.alarmList[index]['id']) {
+                            // log(alarmChangeNotifier.alarmList[index]['id'].toString());
+                            // log(item[index]['id'].toString());
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
+                          }
+                        },
+                        child: Slidable(
+                          endActionPane: ActionPane(motion: const BehindMotion(), children: [
+                            SlidableAction(
+                                backgroundColor: cRedAccentColor,
+                                icon: Icons.delete,
+                                label: 'Delete',
+                                onPressed: (context) {
+                                  Alarm.stop(item[index]['id']);
+                                  log('Alarm deleted and stoped for ${item[index]['id']}');
+                                  SpController().deleteAlarm(index);
+                                  ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = true;
+                                  if (index >= 0 && index < alarmChangeNotifier.alarmList.length) {
+                                    alarmChangeNotifier.alarmList.removeAt(index);
+                                    alarmChangeNotifier.updateState();
+                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Alarm deleted")));
+                                }),
+                            SlidableAction(backgroundColor: cBlueAccent, icon: Icons.close, label: 'Cancel', onPressed: (context) {}),
+                          ]),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item[index]['time'].toString(),
+                                        style: semiBold24TextStyle(Theme.of(context).colorScheme.primary),
+                                      ),
+                                      Text(
+                                        item[index]['repeat'].toString() == '' ? 'Ring once' : item[index]['repeat'].toString(),
+                                        style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 50,
+                                    child: FittedBox(
+                                      fit: BoxFit.cover,
+                                      child: CupertinoSwitch(
+                                        activeColor: Colors.blue,
+                                        trackColor: const Color.fromARGB(255, 220, 218, 218),
+                                        value: item[index]['alarmSwitch'],
+                                        onChanged: (value) {
+                                          ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
+                                          log((ref.read(alarmChangeNotifier.switchProvider(index).notifier).state).toString());
+                                          if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
+                                            Alarm.stop(item[index]['id']);
+                                            item[index]['alarmSwitch'] = false;
+                                            log('Hi');
+                                          } else {
+                                            item[index]['alarmSwitch'] = true;
+                                            log('Hlw');
+                                            final alarmSettings = AlarmSettings(
+                                              id: item[index]['id'],
+                                              dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['time']),
+                                              assetAudioPath:
+                                                  alarmChangeNotifier.ringtoneNameValue == "" ? 'assets/alarm.mp3' : alarmChangeNotifier.ringtoneNameValue,
+                                              loopAudio: true,
+                                              vibrate: item[index]['vibration'],
+                                              volumeMax: true,
+                                              fadeDuration: 3.0,
+                                              notificationTitle: 'Alarm',
+                                              notificationBody: 'This is the body',
+                                              enableNotificationOnKill: true,
+                                            );
+                                            Alarm.set(alarmSettings: alarmSettings);
+                                          }
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -194,7 +207,7 @@ class AlarmPage extends ConsumerWidget {
                           ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
                           ref.invalidate(alarmChangeNotifier.alarmActionSelect);
                           ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                         },
                         child: Text(
                           'New Alarm',

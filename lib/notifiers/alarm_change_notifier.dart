@@ -13,6 +13,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   Future<void> onInit() async {
     // log('Hello ${alarmList.toString()}');
     alarmList = await SpController().getAlarmList();
+    themeType = await SpController().loadThemeType();
     log('in oninit: ${alarmList.toString()}');
     // setAllAlarms();
     notifyListeners();
@@ -62,6 +63,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final isSlidable = StateProvider<bool>((ref) => false);
   // bool themeType=true;
   final themeTypeProvider = StateProvider<bool>((ref) => true);
+  bool themeType = true;
 
   void pickTime(time) {
     selectedDateTime = time;
@@ -111,6 +113,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  
   DateTime setAlarmTimeAgain(prevTime) {
     selectedDateTime = DateTime.parse(prevTime);
     if (selectedDateTime.isBefore(DateTime.now())) {

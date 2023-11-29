@@ -12,7 +12,6 @@ class AlarmDetailsPage extends ConsumerWidget {
   const AlarmDetailsPage({
     super.key,
   });
-  // final NotificationServices notificationServices = NotificationServices();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -139,8 +138,8 @@ class AlarmDetailsPage extends ConsumerWidget {
               splashFactory: NoSplash.splashFactory,
               highlightColor: Colors.transparent,
               onTap: () {
-                  ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
-                  ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
+                ref.read(isBottomSheetRightButtonActive.notifier).state = true;
                 commonBottomSheet(
                   bottomSheetHeight: 240,
                   context: context,
@@ -188,10 +187,10 @@ class AlarmDetailsPage extends ConsumerWidget {
                       style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                     ),
                     const Spacer(),
-                   Text(
-                            ref.watch(alarmChangeNotifier.alarmActionSelect),
-                            style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
-                          ),
+                    Text(
+                      ref.watch(alarmChangeNotifier.alarmActionSelect),
+                      style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
+                    ),
                     Icon(
                       Icons.keyboard_arrow_right_outlined,
                       size: 28,

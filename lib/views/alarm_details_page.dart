@@ -7,7 +7,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
   const AlarmDetailsPage({
@@ -45,8 +44,6 @@ class AlarmDetailsPage extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
-                
-                // alarmChangeNotifier.add(DateFormat('hh:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider)));
                 alarmChangeNotifier.saveAlarm(context);
               },
               icon: Icon(
@@ -142,13 +139,8 @@ class AlarmDetailsPage extends ConsumerWidget {
               splashFactory: NoSplash.splashFactory,
               highlightColor: Colors.transparent,
               onTap: () {
-                if (ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state == '') {
-                  ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = '';
-                  ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                } else {
                   ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
                   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                }
                 commonBottomSheet(
                   bottomSheetHeight: 240,
                   context: context,
@@ -196,12 +188,10 @@ class AlarmDetailsPage extends ConsumerWidget {
                       style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                     ),
                     const Spacer(),
-                    ref.watch(alarmChangeNotifier.alarmActionSelect) != ""
-                        ? Text(
+                   Text(
                             ref.watch(alarmChangeNotifier.alarmActionSelect),
                             style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
-                          )
-                        : const SizedBox(),
+                          ),
                     Icon(
                       Icons.keyboard_arrow_right_outlined,
                       size: 28,
@@ -268,20 +258,14 @@ class AlarmDetailsPage extends ConsumerWidget {
                       allowMultiple: false,
                       type: FileType.audio,
                     );
-                    // allowMultiple: false;
                     if (result == null) return;
                     //* Open Single file
                     final file = result.files.first;
-                    // print(file.name);
-                    // .watch(alarmChangeNotifier) = file.name;
-                    // ref.read(alarmChangeNotifier.fileName) = file.name;
                     ref.read(alarmChangeNotifier.ringtoneName.notifier).state = file.name;
                     ref.read(alarmChangeNotifier.ringtoneName.notifier).state = file.path.toString();
                     var ringtoneNames = file.path.toString().split('file_picker/');
                     alarmChangeNotifier.ringtoneNameValue = ringtoneNames.last;
                     ref.read(alarmChangeNotifier.ringtoneName.notifier).state = ringtoneNames.last;
-                    // log(alarmChangeNotifier.fileNameValue);
-                    //  openFile(file);
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -295,12 +279,15 @@ class AlarmDetailsPage extends ConsumerWidget {
                         // const SizedBox(
                         //   width: 80,
                         // ),
-                        const Spacer(),
                         Expanded(
-                          child: Text(
-                            ref.watch(alarmChangeNotifier.ringtoneName).toString(),
-                            style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
-                            overflow: TextOverflow.ellipsis,
+                          child: SizedBox(
+                            width: 100,
+                            child: Text(
+                              ref.watch(alarmChangeNotifier.ringtoneName) == '' ? 'Default' : ref.watch(alarmChangeNotifier.ringtoneName).toString(),
+                              style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.right,
+                            ),
                           ),
                         ),
                         Icon(
@@ -407,11 +394,11 @@ class AlarmActionContent extends ConsumerWidget {
                     return CustomRadioButton(
                       onChanged: () {
                         ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
-                        if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
-                          ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                        } else {
-                          ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                        }
+                        // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                        //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                        // } else {
+                        //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                        // }
                       },
                       isSelected: ref.watch(alarmChangeNotifier.tempAlarmActionSelect) == alarmChangeNotifier.repeatType[index],
                     );
@@ -420,11 +407,11 @@ class AlarmActionContent extends ConsumerWidget {
                 itemColor: ref.watch(alarmChangeNotifier.tempAlarmActionSelect) == alarmChangeNotifier.repeatType[index] ? cPrimaryTint3Color : cWhiteColor,
                 onPressed: () {
                   ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
-                  if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
-                    ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                  } else {
-                    ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                  }
+                  // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+                  // } else {
+                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+                  // }
                 },
               ),
             );

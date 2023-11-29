@@ -1,15 +1,19 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AlarmRingScreen extends StatelessWidget {
+class AlarmRingScreen extends ConsumerWidget {
   final AlarmSettings? alarmSettings;
 
   const AlarmRingScreen({Key? key, this.alarmSettings}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
@@ -37,7 +41,7 @@ class AlarmRingScreen extends StatelessWidget {
                           now.minute,
                           0,
                           0,
-                        ).add(const Duration(minutes: 1)),
+                        ).add(const Duration(minutes: 5)),
                       ),
                     ).then((_) => Navigator.pop(context));
                   },
@@ -48,13 +52,19 @@ class AlarmRingScreen extends StatelessWidget {
                 ),
                 RawMaterialButton(
                   onPressed: () async {
+                    // Alarm.stop(alarmSettings!.id);
                     for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                      log('Alarm Settings Id: ${alarmSettings!.id.toString()}');
+                      log('ring: ${alarmChangeNotifier.alarmList.toString()}');
+                      log('Alarm Id: ${alarmChangeNotifier.alarmList[i]['id'].toString()}');
                       if (alarmChangeNotifier.alarmList[i]['id'] == alarmSettings!.id) {
                         if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Ring once') {
+                          log('Hdggf');
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = false;
+                          log('Alarm Switch State: ${alarmChangeNotifier.alarmList[i]['alarmSwitch']}');
                           alarmChangeNotifier.updateState();
-                        } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'EveryDay') {
+                        } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Everyday') {
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
                           DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['time']);
@@ -80,10 +90,10 @@ class AlarmRingScreen extends StatelessWidget {
                           }
                           alarmChangeNotifier.alarmList.clear();
                           alarmChangeNotifier.alarmList = await SpController().getAlarmList();
+                          log(alarmChangeNotifier.alarmList.toString());
                         }
                       }
                     }
-                    // Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                   },
                   child: Text(
                     "Stop",

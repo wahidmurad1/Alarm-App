@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
-import 'package:alarm_app/alarm_change_notifier.dart';
+import 'package:alarm_app/notifiers/alarm_change_notifier.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/consts/const.dart';
@@ -95,12 +97,13 @@ class AlarmPage extends ConsumerWidget {
                       // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                       return Slidable(
                         endActionPane: ActionPane(motion: const BehindMotion(), children: [
-                          
                           SlidableAction(
                               backgroundColor: cRedAccentColor,
                               icon: Icons.delete,
                               label: 'Delete',
                               onPressed: (context) {
+                                Alarm.stop(item[index]['id']);
+                                log('Alarm deleted and stoped for ${item[index]['id']}');
                                 SpController().deleteAlarm(index);
                                 ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = true;
                                 if (index >= 0 && index < alarmChangeNotifier.alarmList.length) {
@@ -146,8 +149,10 @@ class AlarmPage extends ConsumerWidget {
                                         if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                           Alarm.stop(item[index]['id']);
                                           item[index]['alarmSwitch'] = false;
+                                          log('Hi');
                                         } else {
                                           item[index]['alarmSwitch'] = true;
+                                          log('Hlw');
                                           final alarmSettings = AlarmSettings(
                                             id: item[index]['id'],
                                             dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['time']),

@@ -15,7 +15,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
     alarmList = await SpController().getAlarmList();
     themeType = await SpController().loadThemeType();
     log('in oninit: ${alarmList.toString()}');
-    // setAllAlarms();
     notifyListeners();
   }
 
@@ -118,7 +117,44 @@ class AlarmChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  
+  void editAlarm(id, context) async {
+    for (int i = 0; i < alarmList.length; i++) {
+      // log(id.toString());
+      // log(alarmList[i]['id'].toString());
+      if (alarmList[i]['id'] == id) {
+        log(alarmList[i]['id'].toString());
+        alarmList[i]['time'] = pickedTime;
+        alarmList[i]['dateTime'] = dateTimeValue.toString();
+        alarmList[i]['repeat'] = repeatTypeValue;
+        alarmList[i]['vibration'] = vibrationSwitchState;
+        alarmList[i]['ringtone'] = ringtoneNameValue == "" ? 'assets/alarm.mp3' : ringtoneNameValue;
+        alarmList[i]['alarmSwitch'] = true;
+        alarmList[i]['clockStyle'] = clockStyleValue;
+        await SpController().deleteAllData();
+        for (int i = 0; i < alarmList.length; i++) {
+          await SpController().saveAlarmList(alarmList[i]);
+        }
+        alarmList.clear();
+        alarmList = await SpController().getAlarmList();
+        Navigator.pop(context);
+        final alarmSettings = AlarmSettings(
+          id: alarmList[i]['id'],
+          dateTime: selectedDateTime,
+          assetAudioPath: ringtoneNameValue == '' ? 'assets/alarm.mp3' : ringtoneNameValue,
+          loopAudio: true,
+          vibrate: vibrationSwitchState,
+          volumeMax: true,
+          fadeDuration: 3.0,
+          notificationTitle: 'This is the title',
+          notificationBody: 'This is the body',
+          enableNotificationOnKill: false,
+        );
+        Alarm.set(alarmSettings: alarmSettings);
+        notifyListeners();
+      }
+    }
+  }
+
   DateTime setAlarmTimeAgain(prevTime) {
     selectedDateTime = DateTime.parse(prevTime);
     if (selectedDateTime.isBefore(DateTime.now())) {

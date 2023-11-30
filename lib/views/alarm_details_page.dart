@@ -30,7 +30,7 @@ class AlarmDetailsPage extends ConsumerWidget {
         // automaticallyImplyLeading: false,
         // surfaceTintColor: Colors.transparent,
         // forceMaterialTransparency: true,
-        // scrolledUnderElevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         leading: IconButton(
@@ -43,7 +43,7 @@ class AlarmDetailsPage extends ConsumerWidget {
           ),
         ),
         title: Text(
-          'Add Alarm',
+          ref.watch(alarmChangeNotifier.isEdit) ? 'Edit Alarm' : 'Add Alarm',
           style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
         ),
         actions: [
@@ -54,7 +54,12 @@ class AlarmDetailsPage extends ConsumerWidget {
                 //     log('Hi');
                 //     break;
                 //   } else {
-                alarmChangeNotifier.saveAlarm(context);
+                if (ref.watch(alarmChangeNotifier.isEdit)) {
+                  // log(alarmChangeNotifier.alarmId.toString());
+                  alarmChangeNotifier.editAlarm(alarmChangeNotifier.alarmId, context);
+                } else {
+                  alarmChangeNotifier.saveAlarm(context);
+                }
                 //   }
                 //   log(alarmChangeNotifier.alarmList[i]['id'].toString());
                 //   log(alarmChangeNotifier.alarmId.toString());
@@ -316,6 +321,41 @@ class AlarmDetailsPage extends ConsumerWidget {
                   ),
                 );
               },
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Divider(
+                thickness: 0.5,
+                color: cLineColor,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Label',
+                    style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      width: 100,
+                      child: Text(
+                        ref.watch(alarmChangeNotifier.ringtoneName) == '' ? 'Alarm' : ref.watch(alarmChangeNotifier.ringtoneName).toString(),
+                        style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_right_outlined,
+                    size: 28,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ],
+              ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),

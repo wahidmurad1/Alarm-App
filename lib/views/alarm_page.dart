@@ -8,6 +8,7 @@ import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -226,7 +227,7 @@ class AlarmPage extends ConsumerWidget {
                         },
                         child: Text(
                           'Add Alarm',
-                          style: semiBold16TextStyle(cWhiteColor),
+                          style: semiBold18TextStyle(cWhiteColor),
                         )),
                   ))
               : const SizedBox(),

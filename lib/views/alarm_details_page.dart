@@ -27,6 +27,10 @@ class AlarmDetailsPage extends ConsumerWidget {
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         elevation: 0,
+        // automaticallyImplyLeading: false,
+        // surfaceTintColor: Colors.transparent,
+        // forceMaterialTransparency: true,
+        // scrolledUnderElevation: 0,
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.background,
         leading: IconButton(
@@ -45,19 +49,21 @@ class AlarmDetailsPage extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
-                for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
-                  if (alarmChangeNotifier.alarmList[i]['id'] == alarmChangeNotifier.alarmId) {
-                    log('Hi');
-                  } else {
-                    alarmChangeNotifier.saveAlarm(context);
-                  }
-                }
+                // for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                //   if (alarmChangeNotifier.alarmList[i]['id'] == alarmChangeNotifier.alarmId) {
+                //     log('Hi');
+                //     break;
+                //   } else {
+                alarmChangeNotifier.saveAlarm(context);
+                //   }
+                //   log(alarmChangeNotifier.alarmList[i]['id'].toString());
+                //   log(alarmChangeNotifier.alarmId.toString());
+                // }
               },
               icon: Icon(
                 Icons.check,
                 color: Theme.of(context).colorScheme.primary,
               )),
-          
         ],
       ),
       body: SizedBox(

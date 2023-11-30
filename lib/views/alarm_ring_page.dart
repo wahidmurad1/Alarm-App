@@ -55,11 +55,10 @@ class AlarmRingScreen extends ConsumerWidget {
                     // Alarm.stop(alarmSettings!.id);
                     for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
                       log('Alarm Settings Id: ${alarmSettings!.id.toString()}');
-                      log('ring: ${alarmChangeNotifier.alarmList.toString()}');
+                      // log('ring: ${alarmChangeNotifier.alarmList.toString()}');
                       log('Alarm Id: ${alarmChangeNotifier.alarmList[i]['id'].toString()}');
                       if (alarmChangeNotifier.alarmList[i]['id'] == alarmSettings!.id) {
                         if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Ring once') {
-                          log('Hdggf');
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = false;
                           log('Alarm Switch State: ${alarmChangeNotifier.alarmList[i]['alarmSwitch']}');
@@ -69,7 +68,6 @@ class AlarmRingScreen extends ConsumerWidget {
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
                           DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['time']);
                           selectedDateTime = selectedDateTime.add(const Duration(days: 1));
-                          // log(selectedDateTime.toString());
                           alarmChangeNotifier.alarmList[i]['time'] = selectedDateTime.toString();
                           final newAlarmSettings = AlarmSettings(
                             id: alarmChangeNotifier.alarmList[i]['id'],

@@ -165,7 +165,7 @@ class AlarmPage extends ConsumerWidget {
                                       child: CupertinoSwitch(
                                         activeColor: Colors.blue,
                                         trackColor: const Color.fromARGB(255, 220, 218, 218),
-                                        value: item[index]['alarmSwitch'],
+                                        value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
                                         onChanged: (value) {
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           log((ref.read(alarmChangeNotifier.switchProvider(index).notifier).state).toString());

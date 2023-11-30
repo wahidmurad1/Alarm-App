@@ -56,14 +56,17 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final ringtoneName = StateProvider<String>((ref) => '');
   String ringtoneNameValue = '';
 
-  String alarmId = '';
+  // String alarmId = '';
   bool switchStateValue = true;
   String clockStyleValue = '12 Hours';
+  final isEdit = StateProvider<bool>((ref) => false);
   DateTime selectedDateTime = DateTime.now();
+  DateTime dateTimeValue = DateTime.now();
   final isSlidable = StateProvider<bool>((ref) => false);
   // bool themeType=true;
   final themeTypeProvider = StateProvider<bool>((ref) => true);
   bool themeType = true;
+  int alarmId = -1;
 
   void pickTime(time) {
     selectedDateTime = time;
@@ -84,10 +87,12 @@ class AlarmChangeNotifier extends ChangeNotifier {
     Map<String, dynamic> alarmDetails = {
       "id": id,
       "time": pickedTime,
+      "dateTime": dateTimeValue.toString(),
       "repeat": repeatTypeValue,
       "vibration": vibrationSwitchState,
       "ringtone": ringtoneNameValue,
-      "alarmSwitch": true
+      "alarmSwitch": true,
+      "clockStyle": clockStyleValue,
     };
     // alarmList.add(alarmDetails);
     String encodedMap = json.encode(alarmDetails);
@@ -113,7 +118,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  
   DateTime setAlarmTimeAgain(prevTime) {
     selectedDateTime = DateTime.parse(prevTime);
     if (selectedDateTime.isBefore(DateTime.now())) {

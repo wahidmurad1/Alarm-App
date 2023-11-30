@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alarm_app/widgets/bottom_sheet.dart';
 import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/widgets/custom_list_tile.dart';
@@ -43,12 +45,19 @@ class AlarmDetailsPage extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
-                alarmChangeNotifier.saveAlarm(context);
+                for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                  if (alarmChangeNotifier.alarmList[i]['id'] == alarmChangeNotifier.alarmId) {
+                    log('Hi');
+                  } else {
+                    alarmChangeNotifier.saveAlarm(context);
+                  }
+                }
               },
               icon: Icon(
                 Icons.check,
                 color: Theme.of(context).colorScheme.primary,
               )),
+          
         ],
       ),
       body: SizedBox(
@@ -106,11 +115,13 @@ class AlarmDetailsPage extends ConsumerWidget {
               height: 180,
               child: CupertinoDatePicker(
                 backgroundColor: Theme.of(context).colorScheme.background,
-                initialDateTime: DateTime.now(),
+                initialDateTime: ref.watch(alarmChangeNotifier.isEdit) ? alarmChangeNotifier.dateTimeValue : DateTime.now(),
                 mode: CupertinoDatePickerMode.time,
                 use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == '12 Hours' ? false : true,
                 onDateTimeChanged: (value) {
                   ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
+                  alarmChangeNotifier.dateTimeValue = value;
+                  log(alarmChangeNotifier.dateTimeValue.toString());
                   alarmChangeNotifier.pickTime(value);
                   // alarmChangeNotifier.formattedTime(value);
                   ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);

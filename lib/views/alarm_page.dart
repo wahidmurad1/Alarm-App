@@ -56,6 +56,7 @@ class AlarmPage extends ConsumerWidget {
                         ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
                         ref.invalidate(alarmChangeNotifier.ringtoneName);
                         // alarmChangeNotifier.ringtoneNameValue = '';
+                        ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                       },
                       icon: const Icon(
@@ -101,9 +102,19 @@ class AlarmPage extends ConsumerWidget {
                       return InkWell(
                         onTap: () async {
                           if (item[index]['id'] == alarmChangeNotifier.alarmList[index]['id']) {
+                            //*For Edit the data that already exists in alarmlist in shared preferences
+                            ref.read(alarmChangeNotifier.isEdit.notifier).state = true;
+                            alarmChangeNotifier.alarmId = item[index]['id'];
+                            log(alarmChangeNotifier.alarmId.toString());
+                            ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = item[index]['repeat'];
+                            ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item[index]['vibration'];
+                            ref.read(alarmChangeNotifier.ringtoneName.notifier).state = item[index]['ringtone'];
+                            ref.read(alarmChangeNotifier.clockStyleState.notifier).state = item[index]['clockStyle'];
+                            alarmChangeNotifier.dateTimeValue = DateTime.parse(item[index]['dateTime']);
+                            // ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item[index]['vibration'];
                             // log(alarmChangeNotifier.alarmList[index]['id'].toString());
                             // log(item[index]['id'].toString());
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
                           }
                         },
                         child: Slidable(
@@ -123,7 +134,7 @@ class AlarmPage extends ConsumerWidget {
                                   }
                                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Alarm deleted")));
                                 }),
-                            SlidableAction(backgroundColor: cBlueAccent, icon: Icons.close, label: 'Cancel', onPressed: (context) {}),
+                            // SlidableAction(backgroundColor: cBlueAccent, icon: Icons.close, label: 'Cancel', onPressed: (context) {}),
                           ]),
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
@@ -161,13 +172,15 @@ class AlarmPage extends ConsumerWidget {
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             Alarm.stop(item[index]['id']);
                                             item[index]['alarmSwitch'] = false;
-                                            log('Hi');
+                                            alarmChangeNotifier.updateState();
+                                            // log('Hi');
                                           } else {
                                             item[index]['alarmSwitch'] = true;
+                                            alarmChangeNotifier.updateState();
                                             log('Hlw');
                                             final alarmSettings = AlarmSettings(
                                               id: item[index]['id'],
-                                              dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['time']),
+                                              dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['dateTime']),
                                               assetAudioPath:
                                                   alarmChangeNotifier.ringtoneNameValue == "" ? 'assets/alarm.mp3' : alarmChangeNotifier.ringtoneNameValue,
                                               loopAudio: true,
@@ -207,10 +220,12 @@ class AlarmPage extends ConsumerWidget {
                           ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
                           ref.invalidate(alarmChangeNotifier.alarmActionSelect);
                           ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
+                          // ref.invalidate(alarmChangeNotifier.repeatTypeValue);
+                          ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                         },
                         child: Text(
-                          'New Alarm',
+                          'Add Alarm',
                           style: semiBold16TextStyle(cWhiteColor),
                         )),
                   ))

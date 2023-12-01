@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alarm_app/widgets/bottom_sheet.dart';
 import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/widgets/custom_list_tile.dart';
@@ -7,6 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
   const AlarmDetailsPage({
@@ -57,53 +60,82 @@ class AlarmDetailsPage extends ConsumerWidget {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              InkWell(
-                onTap: () {
-                  ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = ref.watch(alarmChangeNotifier.clockStyleState);
-                  commonBottomSheet(
-                      bottomSheetHeight: 150,
-                      context: context,
-                      content: const ClockStyleContent(),
-                      onPressCloseButton: () {
-                        Navigator.pop(context);
-                      },
-                      onPressRightButton: () {
-                        ref.read(alarmChangeNotifier.clockStyleState.notifier).state = ref.watch(alarmChangeNotifier.tempClockStyleState);
-                        alarmChangeNotifier.clockStyleValue = ref.watch(alarmChangeNotifier.clockStyleState);
-                        Navigator.pop(context);
-                      },
-                      rightText: 'Done',
-                      rightTextStyle: semiBold16TextStyle(cPrimaryColor),
-                      title: 'Clock Style',
-                      isRightButtonShow: true);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Clock Style',
-                        style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
-                      ),
-                      const Spacer(),
-                      Text(
-                        ref.watch(alarmChangeNotifier.clockStyleState),
-                        style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right_outlined,
-                        size: 28,
-                        color: Theme.of(context).colorScheme.primary,
-                      )
+              // InkWell(
+              //   onTap: () {
+              //     ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = ref.watch(alarmChangeNotifier.clockStyleState);
+              //     commonBottomSheet(
+              //         bottomSheetHeight: 150,
+              //         context: context,
+              //         content: const ClockStyleContent(),
+              //         onPressCloseButton: () {
+              //           Navigator.pop(context);
+              //         },
+              //         onPressRightButton: () {
+              //           ref.read(alarmChangeNotifier.clockStyleState.notifier).state = ref.watch(alarmChangeNotifier.tempClockStyleState);
+              //           alarmChangeNotifier.clockStyleValue = ref.watch(alarmChangeNotifier.clockStyleState);
+              //           Navigator.pop(context);
+              //         },
+              //         rightText: 'Done',
+              //         rightTextStyle: semiBold16TextStyle(cPrimaryColor),
+              //         title: 'Clock Style',
+              //         isRightButtonShow: true);
+              //   },
+              //   child: Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              //     child: Row(
+              //       children: [
+              //         Text(
+              //           'Clock Style',
+              //           style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
+              //         ),
+              //         const Spacer(),
+              //         Text(
+              //           ref.watch(alarmChangeNotifier.clockStyleState),
+              //           style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
+              //         ),
+              //         Icon(
+              //           Icons.keyboard_arrow_right_outlined,
+              //           size: 28,
+              //           color: Theme.of(context).colorScheme.primary,
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
+
+              Consumer(
+                builder: (context, ref, child) {
+                  final clockStyle = ref.watch(alarmChangeNotifier.clockStyleState);
+                  return ToggleSwitch(
+                    minWidth: 90.0,
+                    initialLabelIndex: clockStyle == '12 Hours' ? 0 : 1,
+                    cornerRadius: 20.0,
+                    activeFgColor: Colors.white,
+                    inactiveBgColor: Colors.grey,
+                    inactiveFgColor: Colors.white,
+                    // activeBgColor: clockStyle == '12 Hours' ? [Colors.blue] : [Colors.pink],
+                    totalSwitches: 2,
+                    labels: const ['12 Hours', '24 Hours'],
+                    activeBgColors: const [
+                      [Colors.blue],
+                      [Colors.pink]
                     ],
-                  ),
-                ),
+                    onToggle: (index) {
+                      if (index == 0) {
+                        ref.read(alarmChangeNotifier.clockStyleState.notifier).state = '12 Hours';
+                        alarmChangeNotifier.clockStyleValue = '12 Hours';
+                      } else if (index == 1) {
+                        ref.read(alarmChangeNotifier.clockStyleState.notifier).state = '24 Hours';
+                        alarmChangeNotifier.clockStyleValue = '24 Hours';
+                      }
+                      print('switched to: $index');
+                    },
+                  );
+                },
               ),
-              
-              
-              const Divider(
-                thickness: 0.5,
-                color: cLineColor,
+
+              const SizedBox(
+                height: 20,
               ),
               SizedBox(
                 height: 180,
@@ -350,60 +382,6 @@ class AlarmDetailsPage extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class ClockStyleContent extends ConsumerWidget {
-  const ClockStyleContent({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    return Column(
-      children: [
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: alarmChangeNotifier.clockStyle.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: CustomListTile(
-                title: alarmChangeNotifier.clockStyle[index].toString(),
-                titleTextStyle: semiBold16TextStyle(cBlackColor),
-                trailing: Consumer(
-                  builder: (context, ref, child) {
-                    return CustomRadioButton(
-                      onChanged: () {
-                        ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = alarmChangeNotifier.clockStyle[index];
-                        // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
-                        // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
-                        //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                        // } else {
-                        //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                        // }
-                      },
-                      isSelected: ref.watch(alarmChangeNotifier.tempClockStyleState) == alarmChangeNotifier.clockStyle[index],
-                    );
-                  },
-                ),
-                itemColor: ref.watch(alarmChangeNotifier.tempClockStyleState) == alarmChangeNotifier.clockStyle[index] ? cPrimaryTint3Color : cWhiteColor,
-                onPressed: () {
-                  ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = alarmChangeNotifier.clockStyle[index];
-                  // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
-                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                  // } else {
-                  //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                  // }
-                },
-              ),
-            );
-          },
-        ),
-      ],
     );
   }
 }

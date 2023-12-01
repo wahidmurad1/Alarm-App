@@ -134,7 +134,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
         for (int i = 0; i < alarmList.length; i++) {
           await SpController().saveAlarmList(alarmList[i]);
         }
-        alarmList.clear();
+        // alarmList.clear();
         alarmList = await SpController().getAlarmList();
         Navigator.pop(context);
         final alarmSettings = AlarmSettings(

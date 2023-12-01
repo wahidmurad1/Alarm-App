@@ -6,9 +6,9 @@ import 'package:alarm_app/sp_controller.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/providers.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -18,7 +18,6 @@ class AlarmPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    final alarmRingNotifier = ref.watch(alarmRingNotifierProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -47,27 +46,29 @@ class AlarmPage extends ConsumerWidget {
         ),
         actions: [
           ref.watch(alarmChangeNotifierProvider).alarmList.isNotEmpty
-              ? Consumer(
-                  builder: (context, ref, child) {
-                    return IconButton(
-                      onPressed: () {
-                        ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
-                        ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
-                        ref.invalidate(alarmChangeNotifier.alarmActionSelect);
-                        ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
-                        ref.invalidate(alarmChangeNotifier.ringtoneName);
-                        // alarmChangeNotifier.ringtoneNameValue = '';
-                        ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        size: 28,
-                        color: Colors.blue,
-                      ),
-                    );
-                    // : const SizedBox();
-                  },
+              ? AvatarGlow(
+                  glowColor: Colors.blue,
+                  endRadius: 30.0,
+                  duration: const Duration(milliseconds: 3000),
+                  repeat: true,
+                  showTwoGlows: true,
+                  repeatPauseDuration: const Duration(milliseconds: 100),
+                  child: IconButton(
+                    onPressed: () {
+                      ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
+                      ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
+                      ref.invalidate(alarmChangeNotifier.alarmActionSelect);
+                      ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
+                      ref.invalidate(alarmChangeNotifier.ringtoneName);
+                      ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
+                    },
+                    icon: const Icon(
+                      Icons.add,
+                      size: 28,
+                      color: Colors.blue,
+                    ),
+                  ),
                 )
               : const SizedBox(),
         ],

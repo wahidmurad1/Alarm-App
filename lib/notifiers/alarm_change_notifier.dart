@@ -11,10 +11,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
     onInit();
   }
   Future<void> onInit() async {
-    // log('Hello ${alarmList.toString()}');
     alarmList = await SpController().getAlarmList();
     themeType = await SpController().loadThemeType();
-    log('in oninit: ${alarmList.toString()}');
     notifyListeners();
   }
 

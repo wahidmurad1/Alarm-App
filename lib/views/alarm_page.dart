@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/notifiers/alarm_change_notifier.dart';
 import 'package:alarm_app/sp_controller.dart';
@@ -97,25 +95,21 @@ class AlarmPage extends ConsumerWidget {
                       );
                     },
                     itemBuilder: (context, index) {
-                      var item = alarmChangeNotifier.alarmList;
+                      var item = alarmChangeNotifier.alarmList[index];
                       // ref.read(alarmChangeNotifier.alarmIdState.notifier).state = alarmChangeNotifier.alarmList.length.toString();
                       // alarmChangeNotifier.alarmId = ref.watch(alarmChangeNotifier.alarmIdState);
                       // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                       return InkWell(
                         onTap: () async {
-                          if (item[index]['id'] == alarmChangeNotifier.alarmList[index]['id']) {
+                          if (item['id'] == alarmChangeNotifier.alarmList[index]['id']) {
                             //*For Edit the data that already exists in alarmlist in shared preferences
                             ref.read(alarmChangeNotifier.isEdit.notifier).state = true;
-                            alarmChangeNotifier.alarmId = item[index]['id'];
-                            log(alarmChangeNotifier.alarmId.toString());
-                            ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = item[index]['repeat'];
-                            ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item[index]['vibration'];
-                            ref.read(alarmChangeNotifier.ringtoneName.notifier).state = item[index]['ringtone'];
-                            ref.read(alarmChangeNotifier.clockStyleState.notifier).state = item[index]['clockStyle'];
-                            alarmChangeNotifier.dateTimeValue = DateTime.parse(item[index]['dateTime']);
-                            // ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item[index]['vibration'];
-                            // log(alarmChangeNotifier.alarmList[index]['id'].toString());
-                            // log(item[index]['id'].toString());
+                            alarmChangeNotifier.alarmId = item['id'];
+                            ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = item['repeat'];
+                            ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item['vibration'];
+                            ref.read(alarmChangeNotifier.ringtoneName.notifier).state = item['ringtone'];
+                            ref.read(alarmChangeNotifier.clockStyleState.notifier).state = item['clockStyle'];
+                            alarmChangeNotifier.dateTimeValue = DateTime.parse(item['dateTime']);
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                           }
                         },
@@ -126,8 +120,7 @@ class AlarmPage extends ConsumerWidget {
                                 icon: Icons.delete,
                                 label: 'Delete',
                                 onPressed: (context) {
-                                  Alarm.stop(item[index]['id']);
-                                  log('Alarm deleted and stoped for ${item[index]['id']}');
+                                  Alarm.stop(item['id']);
                                   SpController().deleteAlarm(index);
                                   ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = true;
                                   if (index >= 0 && index < alarmChangeNotifier.alarmList.length) {
@@ -151,11 +144,11 @@ class AlarmPage extends ConsumerWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item[index]['time'].toString(),
+                                        item['time'].toString(),
                                         style: semiBold24TextStyle(Theme.of(context).colorScheme.primary),
                                       ),
                                       Text(
-                                        item[index]['repeat'].toString() == '' ? 'Ring once' : item[index]['repeat'].toString(),
+                                        item['repeat'].toString() == '' ? 'Ring once' : item['repeat'].toString(),
                                         style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
                                       ),
                                     ],
@@ -171,19 +164,19 @@ class AlarmPage extends ConsumerWidget {
                                         onChanged: (value) async {
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
-                                            Alarm.stop(item[index]['id']);
-                                            item[index]['alarmSwitch'] = false;
+                                            Alarm.stop(item['id']);
+                                            item['alarmSwitch'] = false;
                                             alarmChangeNotifier.updateState();
                                           } else {
-                                            item[index]['alarmSwitch'] = true;
+                                            item['alarmSwitch'] = true;
                                             alarmChangeNotifier.updateState();
                                             final alarmSettings = AlarmSettings(
-                                              id: item[index]['id'],
-                                              dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['dateTime']),
+                                              id: item['id'],
+                                              dateTime: alarmChangeNotifier.setAlarmTimeAgain(item['dateTime']),
                                               assetAudioPath:
                                                   alarmChangeNotifier.ringtoneNameValue == "" ? 'assets/alarm.mp3' : alarmChangeNotifier.ringtoneNameValue,
                                               loopAudio: true,
-                                              vibrate: item[index]['vibration'],
+                                              vibrate: item['vibration'],
                                               volumeMax: true,
                                               fadeDuration: 3.0,
                                               notificationTitle: 'Alarm',

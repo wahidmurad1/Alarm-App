@@ -6,13 +6,7 @@ import 'package:flutter/material.dart';
 class AlarmRingNotifier extends ChangeNotifier {
   late List<AlarmSettings> alarms;
   static StreamSubscription<AlarmSettings>? subscription;
-  // final AlarmChangeNotifier alarmChangeNotifier = AlarmChangeNotifier();
 
-  // @override
-  // void dispose() {
-  //   subscription?.cancel();
-  //   super.dispose();
-  // }
 
   AlarmRingNotifier() {
     loadAlarms();

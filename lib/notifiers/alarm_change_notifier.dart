@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
@@ -91,12 +90,10 @@ class AlarmChangeNotifier extends ChangeNotifier {
       "alarmSwitch": true,
       "clockStyle": clockStyleValue,
     };
-    // alarmList.add(alarmDetails);
     String encodedMap = json.encode(alarmDetails);
     await SpController().saveAlarmDetails(encodedMap);
     await SpController().saveAlarmList(alarmDetails);
     alarmList = await SpController().getAlarmList();
-    // log(alarmList.toString());
     Navigator.pop(context);
     final alarmSettings = AlarmSettings(
       id: id,
@@ -111,16 +108,12 @@ class AlarmChangeNotifier extends ChangeNotifier {
       enableNotificationOnKill: false,
     );
     Alarm.set(alarmSettings: alarmSettings);
-    log('in Save Alarm: ${alarmList.toString()}');
     notifyListeners();
   }
 
   void editAlarm(id, context) async {
     for (int i = 0; i < alarmList.length; i++) {
-      // log(id.toString());
-      // log(alarmList[i]['id'].toString());
       if (alarmList[i]['id'] == id) {
-        log(alarmList[i]['id'].toString());
         alarmList[i]['time'] = pickedTime;
         alarmList[i]['dateTime'] = dateTimeValue.toString();
         alarmList[i]['repeat'] = repeatTypeValue;
@@ -143,8 +136,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
           vibrate: vibrationSwitchState,
           volumeMax: true,
           fadeDuration: 3.0,
-          notificationTitle: 'This is the title',
-          notificationBody: 'This is the body',
+          notificationTitle: 'Alarm',
+          notificationBody: 'This is the Alarm',
           enableNotificationOnKill: false,
         );
         Alarm.set(alarmSettings: alarmSettings);
@@ -158,7 +151,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
     if (selectedDateTime.isBefore(DateTime.now())) {
       selectedDateTime = selectedDateTime.add(const Duration(days: 1));
     }
-    log(selectedDateTime.toString());
     notifyListeners();
     return selectedDateTime;
   }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/notifiers/providers.dart';
 import 'package:alarm_app/sp_controller.dart';
@@ -52,23 +50,18 @@ class AlarmRingScreen extends ConsumerWidget {
                 ),
                 RawMaterialButton(
                   onPressed: () async {
-                    // Alarm.stop(alarmSettings!.id);
                     for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
-                      log('Alarm Settings Id: ${alarmSettings!.id.toString()}');
-                      // log('ring: ${alarmChangeNotifier.alarmList.toString()}');
-                      log('Alarm Id: ${alarmChangeNotifier.alarmList[i]['id'].toString()}');
                       if (alarmChangeNotifier.alarmList[i]['id'] == alarmSettings!.id) {
                         if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Ring once') {
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = false;
-                          log('Alarm Switch State: ${alarmChangeNotifier.alarmList[i]['alarmSwitch']}');
                           alarmChangeNotifier.updateState();
                         } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Everyday') {
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
-                          DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['time']);
+                          DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
                           selectedDateTime = selectedDateTime.add(const Duration(days: 1));
-                          alarmChangeNotifier.alarmList[i]['time'] = selectedDateTime.toString();
+                          alarmChangeNotifier.alarmList[i]['dateTime'] = selectedDateTime.toString();
                           final newAlarmSettings = AlarmSettings(
                             id: alarmChangeNotifier.alarmList[i]['id'],
                             dateTime: selectedDateTime,
@@ -88,7 +81,6 @@ class AlarmRingScreen extends ConsumerWidget {
                           }
                           alarmChangeNotifier.alarmList.clear();
                           alarmChangeNotifier.alarmList = await SpController().getAlarmList();
-                          log(alarmChangeNotifier.alarmList.toString());
                         }
                       }
                     }

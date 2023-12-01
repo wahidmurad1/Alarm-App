@@ -116,7 +116,7 @@ class AlarmPage extends ConsumerWidget {
                             // ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item[index]['vibration'];
                             // log(alarmChangeNotifier.alarmList[index]['id'].toString());
                             // log(item[index]['id'].toString());
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => AlarmDetailsPage()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                           }
                         },
                         child: Slidable(
@@ -168,18 +168,15 @@ class AlarmPage extends ConsumerWidget {
                                         activeColor: Colors.blue,
                                         trackColor: const Color.fromARGB(255, 220, 218, 218),
                                         value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
-                                        onChanged: (value) {
+                                        onChanged: (value) async {
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
-                                          log((ref.read(alarmChangeNotifier.switchProvider(index).notifier).state).toString());
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             Alarm.stop(item[index]['id']);
                                             item[index]['alarmSwitch'] = false;
                                             alarmChangeNotifier.updateState();
-                                            // log('Hi');
                                           } else {
                                             item[index]['alarmSwitch'] = true;
                                             alarmChangeNotifier.updateState();
-                                            log('Hlw');
                                             final alarmSettings = AlarmSettings(
                                               id: item[index]['id'],
                                               dateTime: alarmChangeNotifier.setAlarmTimeAgain(item[index]['dateTime']),
@@ -194,6 +191,10 @@ class AlarmPage extends ConsumerWidget {
                                               enableNotificationOnKill: true,
                                             );
                                             Alarm.set(alarmSettings: alarmSettings);
+                                          }
+                                          await SpController().deleteAllData();
+                                          for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                                            await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
                                           }
                                         },
                                       ),

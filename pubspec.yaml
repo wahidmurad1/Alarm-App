@@ -46,6 +46,7 @@ dependencies:
   go_router: ^12.1.1
   avatar_glow: ^2.0.2
   toggle_switch: ^2.1.0
+  stop_watch_timer: ^3.0.2
 
 dev_dependencies:
   flutter_test:

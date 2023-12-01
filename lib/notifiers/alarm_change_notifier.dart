@@ -4,6 +4,7 @@ import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class AlarmChangeNotifier extends ChangeNotifier {
   AlarmChangeNotifier() {
@@ -157,5 +158,13 @@ class AlarmChangeNotifier extends ChangeNotifier {
 
   void updateState() {
     notifyListeners();
+  }
+
+  final StopWatchTimer stopWatchTimer = StopWatchTimer();
+  final isHour = true;
+  @override
+  void dispose() {
+    stopWatchTimer.dispose();
+    super.dispose();
   }
 }

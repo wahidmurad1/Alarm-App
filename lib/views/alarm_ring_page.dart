@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:alarm/alarm.dart';
-import 'package:alarm_app/providers.dart';
+import 'package:alarm_app/notifiers/providers.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

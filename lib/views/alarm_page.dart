@@ -5,7 +5,7 @@ import 'package:alarm_app/notifiers/alarm_change_notifier.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/consts/const.dart';
-import 'package:alarm_app/providers.dart';
+import 'package:alarm_app/notifiers/providers.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

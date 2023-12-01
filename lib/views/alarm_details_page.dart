@@ -4,7 +4,7 @@ import 'package:alarm_app/widgets/bottom_sheet.dart';
 import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/widgets/custom_list_tile.dart';
 import 'package:alarm_app/widgets/custom_radio_button.dart';
-import 'package:alarm_app/providers.dart';
+import 'package:alarm_app/notifiers/providers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

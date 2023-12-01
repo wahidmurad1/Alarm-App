@@ -1,6 +1,6 @@
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/consts/routes.dart';
-import 'package:alarm_app/providers.dart';
+import 'package:alarm_app/notifiers/providers.dart';
 import 'package:alarm_app/theme/dark_theme.dart';
 import 'package:alarm_app/theme/light_theme.dart';
 import 'package:alarm_app/consts/const.dart';

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/consts/routes.dart';
 import 'package:flutter/material.dart';

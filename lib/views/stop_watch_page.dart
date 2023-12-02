@@ -43,45 +43,54 @@ class StopWatchPage extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          StreamBuilder(
-              stream: alarmChangeNotifier.stopWatchTimer.rawTime,
-              initialData: alarmChangeNotifier.stopWatchTimer.rawTime.value,
-              builder: (context, snapshot) {
-                final value = snapshot.data;
-                final displayTime = StopWatchTimer.getDisplayTime(value!, hours: alarmChangeNotifier.isHour);
-                return Center(
-                    child: Text(
-                  displayTime,
-                  style: semiBold20TextStyle(Theme.of(context).colorScheme.primary),
-                ));
-              }),
-          // Spacer(),
-          const SizedBox(
-            height: 50,
+          Expanded(
+            child: StreamBuilder(
+                stream: alarmChangeNotifier.stopWatchTimer.rawTime,
+                initialData: alarmChangeNotifier.stopWatchTimer.rawTime.value,
+                builder: (context, snapshot) {
+                  final value = snapshot.data;
+                  final displayTime = StopWatchTimer.getDisplayTime(value!, hours: alarmChangeNotifier.isHour);
+                  return Center(
+                      child: Text(
+                    displayTime,
+                    style: semiBold20TextStyle(Theme.of(context).colorScheme.primary),
+                  ));
+                }),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  alarmChangeNotifier.stopWatchTimer.onStartTimer();
-                },
-                child: Text('Start'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  alarmChangeNotifier.stopWatchTimer.onStopTimer();
-                },
-                child: Text('Stop'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  alarmChangeNotifier.stopWatchTimer.onResetTimer();
-                },
-                child: Text('Restart'),
-              ),
+              IconButton(
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    if (ref.watch(alarmChangeNotifier.isPlay)) {
+                      alarmChangeNotifier.stopWatchTimer.onStartTimer();
+                    } else {
+                      alarmChangeNotifier.stopWatchTimer.onStopTimer();
+                    }
+                    ref.read(alarmChangeNotifier.isPlay.notifier).state = !ref.read(alarmChangeNotifier.isPlay.notifier).state;
+                  },
+                  icon: Icon(
+                    ref.watch(alarmChangeNotifier.isPlay) ? Icons.play_circle : Icons.pause_circle,
+                    color: cPrimaryColor,
+                  )),
+              ref.watch(alarmChangeNotifier.isPlay)
+                  ? IconButton(
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        alarmChangeNotifier.stopWatchTimer.onResetTimer();
+                      },
+                      icon: const Icon(
+                        CupertinoIcons.restart,
+                        size: 20,
+                      ))
+                  : const SizedBox(),
             ],
           ),
+          const SizedBox(
+            height: 20,
+          )
         ],
       ),
     );

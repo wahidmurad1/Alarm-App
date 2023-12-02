@@ -23,6 +23,7 @@ class AlarmPage extends ConsumerWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
+            constraints: const BoxConstraints(),
             onPressed: () async {
               ref.read(alarmChangeNotifier.themeTypeProvider.notifier).state = !ref.read(alarmChangeNotifier.themeTypeProvider.notifier).state;
               alarmChangeNotifier.themeType = ref.watch(alarmChangeNotifier.themeTypeProvider);
@@ -96,9 +97,6 @@ class AlarmPage extends ConsumerWidget {
                     },
                     itemBuilder: (context, index) {
                       var item = alarmChangeNotifier.alarmList[index];
-                      // ref.read(alarmChangeNotifier.alarmIdState.notifier).state = alarmChangeNotifier.alarmList.length.toString();
-                      // alarmChangeNotifier.alarmId = ref.watch(alarmChangeNotifier.alarmIdState);
-                      // final switchState = ref.watch(alarmChangeNotifier.switchProvider(index));
                       return InkWell(
                         onTap: () async {
                           if (item['id'] == alarmChangeNotifier.alarmList[index]['id']) {
@@ -114,7 +112,7 @@ class AlarmPage extends ConsumerWidget {
                           }
                         },
                         child: Slidable(
-                          endActionPane: ActionPane(motion: const BehindMotion(), children: [
+                          endActionPane: ActionPane(extentRatio: 0.2, motion: const ScrollMotion(), children: [
                             SlidableAction(
                                 backgroundColor: cRedAccentColor,
                                 icon: Icons.delete,

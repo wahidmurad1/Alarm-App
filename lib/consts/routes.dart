@@ -13,7 +13,7 @@ const krAlarmRing = '/ring-alarm';
 final routes = [
   GoRoute(
     path: krAlarm,
-    pageBuilder: (context, state) => MaterialPage(child: StopWatchPage()),
+    pageBuilder: (context, state) => MaterialPage(child: AlarmPage()),
   ),
   GoRoute(
     path: krAlarmDetails,

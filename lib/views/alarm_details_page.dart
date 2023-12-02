@@ -52,55 +52,12 @@ class AlarmDetailsPage extends ConsumerWidget {
               )),
         ],
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              // InkWell(
-              //   onTap: () {
-              //     ref.read(alarmChangeNotifier.tempClockStyleState.notifier).state = ref.watch(alarmChangeNotifier.clockStyleState);
-              //     commonBottomSheet(
-              //         bottomSheetHeight: 150,
-              //         context: context,
-              //         content: const ClockStyleContent(),
-              //         onPressCloseButton: () {
-              //           Navigator.pop(context);
-              //         },
-              //         onPressRightButton: () {
-              //           ref.read(alarmChangeNotifier.clockStyleState.notifier).state = ref.watch(alarmChangeNotifier.tempClockStyleState);
-              //           alarmChangeNotifier.clockStyleValue = ref.watch(alarmChangeNotifier.clockStyleState);
-              //           Navigator.pop(context);
-              //         },
-              //         rightText: 'Done',
-              //         rightTextStyle: semiBold16TextStyle(cPrimaryColor),
-              //         title: 'Clock Style',
-              //         isRightButtonShow: true);
-              //   },
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              //     child: Row(
-              //       children: [
-              //         Text(
-              //           'Clock Style',
-              //           style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
-              //         ),
-              //         const Spacer(),
-              //         Text(
-              //           ref.watch(alarmChangeNotifier.clockStyleState),
-              //           style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
-              //         ),
-              //         Icon(
-              //           Icons.keyboard_arrow_right_outlined,
-              //           size: 28,
-              //           color: Theme.of(context).colorScheme.primary,
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
-
               Consumer(
                 builder: (context, ref, child) {
                   final clockStyle = ref.watch(alarmChangeNotifier.clockStyleState);
@@ -126,12 +83,10 @@ class AlarmDetailsPage extends ConsumerWidget {
                         ref.read(alarmChangeNotifier.clockStyleState.notifier).state = '24 Hours';
                         alarmChangeNotifier.clockStyleValue = '24 Hours';
                       }
-                      print('switched to: $index');
                     },
                   );
                 },
               ),
-
               const SizedBox(
                 height: 20,
               ),

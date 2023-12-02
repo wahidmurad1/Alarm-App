@@ -13,6 +13,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   Future<void> onInit() async {
     alarmList = await SpController().getAlarmList();
     themeType = await SpController().loadThemeType();
+
     notifyListeners();
   }
 
@@ -52,15 +53,11 @@ class AlarmChangeNotifier extends ChangeNotifier {
   bool vibrationSwitchState = true;
   final ringtoneName = StateProvider<String>((ref) => '');
   String ringtoneNameValue = '';
-
-  // String alarmId = '';
   bool switchStateValue = true;
   String clockStyleValue = '12 Hours';
   final isEdit = StateProvider<bool>((ref) => false);
   DateTime selectedDateTime = DateTime.now();
   DateTime dateTimeValue = DateTime.now();
-  final isSlidable = StateProvider<bool>((ref) => false);
-  // bool themeType=true;
   final themeTypeProvider = StateProvider<bool>((ref) => true);
   bool themeType = true;
   int alarmId = -1;
@@ -167,4 +164,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
     stopWatchTimer.dispose();
     super.dispose();
   }
+
+  final isPlay = StateProvider<bool>((ref) => true);
 }

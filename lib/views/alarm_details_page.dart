@@ -3,10 +3,12 @@ import 'package:alarm_app/consts/const.dart';
 import 'package:alarm_app/widgets/custom_list_tile.dart';
 import 'package:alarm_app/widgets/custom_radio_button.dart';
 import 'package:alarm_app/notifiers/providers.dart';
+import 'package:day_picker/day_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class AlarmDetailsPage extends ConsumerWidget {
@@ -17,6 +19,11 @@ class AlarmDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+    // if (alarmChangeNotifier.clockStyleValue == '12 Hours') {
+    //   alarmChangeNotifier.pickedTime = DateFormat('h:mm a').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    // } else {
+    //   alarmChangeNotifier.pickedTime = DateFormat('HH:mm').format(ref.watch(alarmChangeNotifier.pickedTimeProvider));
+    // }
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -68,7 +75,6 @@ class AlarmDetailsPage extends ConsumerWidget {
                     activeFgColor: Colors.white,
                     inactiveBgColor: Colors.grey,
                     inactiveFgColor: Colors.white,
-                    // activeBgColor: clockStyle == '12 Hours' ? [Colors.blue] : [Colors.pink],
                     totalSwitches: 2,
                     labels: const ['12 Hours', '24 Hours'],
                     activeBgColors: const [
@@ -101,7 +107,6 @@ class AlarmDetailsPage extends ConsumerWidget {
                     ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
                     alarmChangeNotifier.dateTimeValue = value;
                     alarmChangeNotifier.pickTime(value);
-                    // alarmChangeNotifier.formattedTime(value);
                     ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
                   },
                 ),
@@ -132,6 +137,11 @@ class AlarmDetailsPage extends ConsumerWidget {
                   commonBottomSheet(
                     bottomSheetHeight: 240,
                     context: context,
+                    content: const AlarmActionContent(),
+                    rightText: 'Done',
+                    title: 'Alarm',
+                    rightTextStyle: semiBold16TextStyle(cPrimaryColor),
+                    isRightButtonShow: true,
                     onPressCloseButton: () {
                       Navigator.pop(context);
                     },
@@ -143,12 +153,16 @@ class AlarmDetailsPage extends ConsumerWidget {
                       } else {
                         // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = ref.watch(alarmChangeNotifier.alarmActionSelect);
                         Navigator.pop(context);
+                        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => CustomDays()));
                         commonBottomSheet(
+                          bottomSheetHeight: 200,
                           context: context,
                           onPressCloseButton: () {
                             Navigator.pop(context);
                           },
                           onPressRightButton: () {
+                            alarmChangeNotifier.customDays = alarmChangeNotifier.tempCustomDays;
+                            alarmChangeNotifier.updateState();
                             Navigator.pop(context);
                           },
                           content: const CustomAlarmShow(),
@@ -159,12 +173,6 @@ class AlarmDetailsPage extends ConsumerWidget {
                         );
                       }
                     },
-                    //*first common bottom sheet content
-                    content: const AlarmActionContent(),
-                    rightText: 'Done',
-                    title: 'Alarm',
-                    rightTextStyle: semiBold16TextStyle(cPrimaryColor),
-                    isRightButtonShow: true,
                   );
                 },
                 child: Padding(
@@ -177,7 +185,9 @@ class AlarmDetailsPage extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Text(
-                        ref.watch(alarmChangeNotifier.alarmActionSelect),
+                        ref.watch(alarmChangeNotifier.alarmActionSelect) != 'Custom' || alarmChangeNotifier.customDays.isEmpty
+                            ? ref.watch(alarmChangeNotifier.alarmActionSelect)
+                            : alarmChangeNotifier.customDays.join(', '),
                         style: semiBold14TextStyle(Theme.of(context).colorScheme.primary),
                       ),
                       Icon(
@@ -258,15 +268,11 @@ class AlarmDetailsPage extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
                             'Ringtone',
                             style: semiBold18TextStyle(Theme.of(context).colorScheme.primary),
                           ),
-                          // const SizedBox(
-                          //   width: 80,
-                          // ),
                           Expanded(
                             child: SizedBox(
                               width: 100,
@@ -299,7 +305,6 @@ class AlarmDetailsPage extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       'Label',
@@ -392,6 +397,65 @@ class AlarmActionContent extends ConsumerWidget {
   }
 }
 
+// class CustomAlarmShow extends ConsumerWidget {
+//   const CustomAlarmShow({
+//     Key? key,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+//     return Column(
+//       children: [
+//         ListView.builder(
+//           physics: const NeverScrollableScrollPhysics(),
+//           shrinkWrap: true,
+//           itemCount: alarmChangeNotifier.customDays.length,
+//           itemBuilder: (BuildContext context, int index) {
+//             return Padding(
+//               padding: const EdgeInsets.only(bottom: 8),
+//               child: Consumer(
+//                 builder: (context, ref, child) {
+//                   final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
+//                   final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
+//                   return CustomListTile(
+//                     title: alarmChangeNotifier.customDays[index].toString(),
+//                     titleTextStyle: semiBold16TextStyle(cBlackColor),
+//                     trailing: Consumer(
+//                       builder: (context, ref, child) {
+//                         return Checkbox(
+//                             value: checkBoxState,
+//                             checkColor: cWhiteColor,
+//                             activeColor: cPrimaryColor,
+//                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+//                             onChanged: (value) {
+//                               ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state = value!;
+//                             });
+//                       },
+//                     ),
+//                     itemColor: checkBoxState ? cPrimaryTint3Color : cWhiteColor,
+//                     onPressed: () {
+//                       ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state =
+//                           !ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state;
+//                       // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.customDays[index];
+//                       // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
+//                       //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
+//                       // } else {
+//                       //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
+//                       // }
+//                     },
+//                   );
+//                 },
+//               ),
+//             );
+
+//           },
+//         ),
+//       ],
+//     );
+//   }
+// }
+
 class CustomAlarmShow extends ConsumerWidget {
   const CustomAlarmShow({
     Key? key,
@@ -400,52 +464,26 @@ class CustomAlarmShow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    return Column(
-      children: [
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: alarmChangeNotifier.customDays.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-                  final checkBoxState = ref.watch(alarmChangeNotifier.checkBoxProvider(index));
-                  return CustomListTile(
-                    title: alarmChangeNotifier.customDays[index].toString(),
-                    titleTextStyle: semiBold16TextStyle(cBlackColor),
-                    trailing: Consumer(
-                      builder: (context, ref, child) {
-                        return Checkbox(
-                            value: checkBoxState,
-                            checkColor: cWhiteColor,
-                            activeColor: cPrimaryColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                            onChanged: (value) {
-                              ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state = value!;
-                            });
-                      },
-                    ),
-                    itemColor: checkBoxState ? cPrimaryTint3Color : cWhiteColor,
-                    onPressed: () {
-                      ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state =
-                          !ref.read(alarmChangeNotifier.checkBoxProvider(index).notifier).state;
-                      // ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.customDays[index];
-                      // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
-                      //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
-                      // } else {
-                      //   ref.read(isBottomSheetRightButtonActive.notifier).state = true;
-                      // }
-                    },
-                  );
-                },
-              ),
-            );
-          },
+    return SizedBox(
+      height: 45,
+      child: SelectWeekDays(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        days: alarmChangeNotifier.days,
+        border: false,
+        boxDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            colors: [Color(0XFF2196F3), Color(0XFF64B5F6), Color(0XFF90CAF9)],
+            tileMode: TileMode.repeated,
+          ),
         ),
-      ],
+        onSelect: (values) {
+          alarmChangeNotifier.tempCustomDays = values;
+          alarmChangeNotifier.updateState();
+        },
+      ),
     );
   }
 }

@@ -47,6 +47,7 @@ dependencies:
   avatar_glow: ^2.0.2
   toggle_switch: ^2.1.0
   stop_watch_timer: ^3.0.2
+  day_picker: ^2.2.0
 
 dev_dependencies:
   flutter_test:

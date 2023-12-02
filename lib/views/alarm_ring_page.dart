@@ -82,6 +82,40 @@ class AlarmRingScreen extends ConsumerWidget {
                           alarmChangeNotifier.alarmList.clear();
                           alarmChangeNotifier.alarmList = await SpController().getAlarmList();
                         }
+                        // else if(alarmChangeNotifier.alarmList[i]['repeat'] == 'Sunday-Thusday'){
+                        //   Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                        //   // alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
+                        // }
+                        else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Sunday-Thursday') {
+                          DateTime now = DateTime.now();
+                          if (now.weekday >= DateTime.sunday && now.weekday <= DateTime.thursday) {
+                            Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                            alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
+                            DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
+                            selectedDateTime = selectedDateTime.add(const Duration(days: 1));
+                            alarmChangeNotifier.alarmList[i]['dateTime'] = selectedDateTime.toString();
+                            final newAlarmSettings = AlarmSettings(
+                              id: alarmChangeNotifier.alarmList[i]['id'],
+                              dateTime: selectedDateTime,
+                              assetAudioPath: alarmChangeNotifier.alarmList[i]['ringtone'],
+                              loopAudio: true,
+                              vibrate: alarmChangeNotifier.alarmList[i]['vibration'],
+                              volumeMax: true,
+                              fadeDuration: 3.0,
+                              notificationTitle: 'This is the title',
+                              notificationBody: 'This is the body',
+                              enableNotificationOnKill: true,
+                            );
+                            Alarm.set(alarmSettings: newAlarmSettings);
+                            Alarm.set(alarmSettings: newAlarmSettings);
+                            await SpController().deleteAllData();
+                            for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                              await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
+                            }
+                            alarmChangeNotifier.alarmList.clear();
+                            alarmChangeNotifier.alarmList = await SpController().getAlarmList();
+                          }
+                        }
                       }
                     }
                   },

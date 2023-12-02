@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/notifiers/alarm_change_notifier.dart';
 import 'package:alarm_app/sp_controller.dart';
@@ -60,7 +62,16 @@ class AlarmPage extends ConsumerWidget {
                       ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
                       ref.invalidate(alarmChangeNotifier.ringtoneName);
                       ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
+                      alarmChangeNotifier.repeatTypeValue = 'Ring once';
+
+                      // alarmChangeNotifier.tempCustomDays.clear();
+                      // alarmChangeNotifier.customDays.clear();
+                      // DateTime now = DateTime.now();
+                      // log("${now.weekday >= DateTime.sunday}");
+                      // log("${now.weekday <= DateTime.thursday}");
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const AlarmDetailsPage()),
+                      );
                     },
                     icon: const Icon(
                       Icons.add,
@@ -146,7 +157,7 @@ class AlarmPage extends ConsumerWidget {
                                         style: semiBold24TextStyle(Theme.of(context).colorScheme.primary),
                                       ),
                                       Text(
-                                        item['repeat'].toString() == '' ? 'Ring once' : item['repeat'].toString(),
+                                        item['repeat'].toString(),
                                         style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
                                       ),
                                     ],
@@ -160,6 +171,7 @@ class AlarmPage extends ConsumerWidget {
                                         trackColor: const Color.fromARGB(255, 220, 218, 218),
                                         value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
                                         onChanged: (value) async {
+                                          log(item['repeat']);
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             Alarm.stop(item['id']);
@@ -214,7 +226,7 @@ class AlarmPage extends ConsumerWidget {
                           ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
                           ref.invalidate(alarmChangeNotifier.alarmActionSelect);
                           ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
-                          // ref.invalidate(alarmChangeNotifier.repeatTypeValue);
+                          alarmChangeNotifier.repeatTypeValue = 'Ring once';
                           ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                         },

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/sp_controller.dart';
+import 'package:day_picker/day_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,7 +26,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
   }
 
   final List<String> repeatType = ['Ring once', 'Everyday', 'Sunday-Thusday', 'Custom'];
-  final List<String> customDays = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednusday', 'Thusday', 'Friday'];
+  // final List<String> customDays = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednusday', 'Thusday', 'Friday'];
+
   final List<String> clockStyle = ['12 Hours', '24 Hours'];
 
   String getDifference(DateTime alarmTime) {
@@ -166,4 +168,28 @@ class AlarmChangeNotifier extends ChangeNotifier {
   }
 
   final isPlay = StateProvider<bool>((ref) => true);
+  //* Day List for day picker package
+  List<DayInWeek> days = [
+    DayInWeek("Sun", dayKey: "Sun"),
+    DayInWeek("Mon", dayKey: "Mon"),
+    DayInWeek("Tue", dayKey: "Tue"),
+    DayInWeek(
+      "Wed",
+      dayKey: "Wed",
+    ),
+    DayInWeek(
+      "Thu",
+      dayKey: "Thu",
+    ),
+    DayInWeek(
+      "Fri",
+      dayKey: "Fri",
+    ),
+    DayInWeek(
+      "Sat",
+      dayKey: "Sat",
+    ),
+  ];
+  List<String> tempCustomDays = [];
+  List<String> customDays = [];
 }

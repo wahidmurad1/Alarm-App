@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/sp_controller.dart';
-import 'package:day_picker/day_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -173,29 +171,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
     stopWatchTimer.dispose();
     super.dispose();
   }
-
   final isPlay = StateProvider<bool>((ref) => true);
-  // List<DayInWeek> days = [
-  //   DayInWeek("Sun", dayKey: "Sun"),
-  //   DayInWeek("Mon", dayKey: "Mon"),
-  //   DayInWeek("Tue", dayKey: "Tue"),
-  //   DayInWeek(
-  //     "Wed",
-  //     dayKey: "Wed",
-  //   ),
-  //   DayInWeek(
-  //     "Thu",
-  //     dayKey: "Thu",
-  //   ),
-  //   DayInWeek(
-  //     "Fri",
-  //     dayKey: "Fri",
-  //   ),
-  //   DayInWeek(
-  //     "Sat",
-  //     dayKey: "Sat",
-  //   ),
-  // ];
   final List<String> days = [
     'sun',
     'mon',
@@ -215,8 +191,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
     false,
   ];
 
-   final isDaySelected = StateProvider.family<bool, int>((ref, index) => false);
-
-  List<String> tempCustomDays = [];
+  final isDaySelected = StateProvider.family<bool, int>((ref, index) => false);
   List<String> customDays = [];
 }

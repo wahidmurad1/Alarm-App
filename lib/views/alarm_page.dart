@@ -63,7 +63,7 @@ class AlarmPage extends ConsumerWidget {
                       ref.invalidate(alarmChangeNotifier.ringtoneName);
                       ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                       alarmChangeNotifier.repeatTypeValue = 'Ring once';
-                      // log('${DateTime.now().weekday == DateTime.saturday}');
+                      alarmChangeNotifier.customDays.clear();
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => const AlarmDetailsPage()),
                       );
@@ -153,6 +153,10 @@ class AlarmPage extends ConsumerWidget {
                                       ),
                                       Text(
                                         item['repeat'].toString(),
+                                        style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
+                                      ),
+                                      Text(
+                                        alarmChangeNotifier.getAlarmTimeRemaining(index: index),
                                         style: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
                                       ),
                                     ],
@@ -266,7 +270,7 @@ class AlarmPage extends ConsumerWidget {
                     ref.invalidate(alarmChangeNotifier.ringtoneName);
                     ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                     alarmChangeNotifier.repeatTypeValue = 'Ring once';
-                    // log('${DateTime.now().weekday == DateTime.saturday}');
+                    alarmChangeNotifier.customDays.clear();
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => const AlarmDetailsPage()),
                     );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:flutter/material.dart';
@@ -171,15 +172,16 @@ class AlarmChangeNotifier extends ChangeNotifier {
     stopWatchTimer.dispose();
     super.dispose();
   }
+
   final isPlay = StateProvider<bool>((ref) => true);
   final List<String> days = [
-    'sun',
-    'mon',
-    'tue',
-    'wed',
-    'thu',
-    'fri',
-    'sat',
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
   ];
   final List<bool> selectedDayState = [
     false,
@@ -193,4 +195,162 @@ class AlarmChangeNotifier extends ChangeNotifier {
 
   final isDaySelected = StateProvider.family<bool, int>((ref, index) => false);
   List<String> customDays = [];
+
+  //*show the next alarm difference
+  // String? getNextAlarm() {
+  //   Duration minDiff = const Duration(days: 365);
+  //   for (int i = 0; i < alarmList.length; i++) {
+  //     if (alarmList[i]['alarmSwitch']) {
+  //       DateTime dt1 = DateTime.parse(alarmList[i]['dateTime']);
+  //       Duration diff = dt1.difference(DateTime.now());
+  //       if (minDiff.inSeconds > diff.inSeconds) {
+  //         minDiff = diff;
+  //       }
+  //     }
+  //   }
+  //   if (minDiff.inDays.abs() == 0 && minDiff.inHours.remainder(24).abs() != 0) {
+  //     return 'Next alarm in ${minDiff.inHours.remainder(24).abs()} hours ${minDiff.inMinutes.remainder(60).abs()} minutes';
+  //   } else if (minDiff.inDays.abs() == 0 && minDiff.inHours.remainder(24).abs() == 0) {
+  //     return 'Next alarm in ${minDiff.inMinutes.remainder(60).abs()} minutes';
+  //   } else if (minDiff.inDays.abs() == 365) {
+  //     log('yes');
+  //     return null;
+  //   } else {
+  //     return 'Next alarm in ${minDiff.inDays.abs()} day ${minDiff.inHours.remainder(24).abs()} hours ${minDiff.inMinutes.remainder(60).abs()} minutes';
+  //   }
+  // }
+
+  // String getAlarmTimeRemaining({required int index}) {
+  //   Duration minDiff = const Duration(days: 365);
+  //   for (int i = 0; i < alarmList.length; i++) {
+  //     if (alarmList[i]['alarmSwitch']) {
+  //       DateTime dt1 = DateTime.parse(alarmList[i]['dateTime']);
+  //       Duration diff = dt1.difference(DateTime.now());
+  //       // if (minDiff.inSeconds > diff.inSeconds) {
+  //       //   minDiff = diff;
+  //       // }
+  //       // if(diff<0){
+  //       //   minDiff
+  //       // }
+  //     }
+  //   }
+  //   if (minDiff.inDays.abs() == 0 && minDiff.inHours.remainder(24).abs() != 0) {
+  //     return 'Next alarm in ${minDiff.inHours.remainder(24).abs()} hours ${minDiff.inMinutes.remainder(60).abs()} minutes';
+  //   } else if (minDiff.inDays.abs() == 0 && minDiff.inHours.remainder(24).abs() == 0) {
+  //     return 'Next alarm in ${minDiff.inMinutes.remainder(60).abs()} minutes';
+  //   } else if (minDiff.inDays.abs() == 365) {
+  //     log('yes');
+  //     return '';
+  //   } else {
+  //     return 'Next alarm in ${minDiff.inDays.abs()} day ${minDiff.inHours.remainder(24).abs()} hours ${minDiff.inMinutes.remainder(60).abs()} minutes';
+  //   }
+  // }
+
+  // String getAlarmTimeRemaining({required int index}) {
+  //   Duration minDiff = const Duration(days: 365);
+  //   // for (int i = 0; i < alarmList.length; i++) {
+  //   if (alarmList[index]['alarmSwitch']) {
+  //     DateTime dt1 = DateTime.parse(alarmList[index]['dateTime']);
+  //     Duration diff = dt1.difference(DateTime.now());
+
+  //     // If the difference is negative, add one day to make it positive
+  //     if (diff.inSeconds < 0) {
+  //       diff = diff.abs();
+  //       diff += const Duration(days: 1);
+  //     }
+
+  //     // Update minDiff if the current diff is smaller
+  //     if (minDiff.inSeconds > diff.inSeconds) {
+  //       minDiff = diff;
+  //     }
+  //   }
+  //   // }
+
+  //   int days = minDiff.inDays;
+  //   int hours = minDiff.inHours % 24;
+  //   int minutes = minDiff.inMinutes % 60;
+  //   // int seconds = minDiff.inSeconds % 60;
+
+  //   if (days == 0 && hours == 0 && minutes == 0) {
+  //     return 'Alarm is ringing now';
+  //   } else {
+  //     return 'Next alarm in $days day(s) $hours hour(s) $minutes minute(s)';
+  //   }
+  // }
+  // String getAlarmTimeRemaining({required int index}) {
+  //   Duration minDiff = const Duration(days: 365);
+  //   if (alarmList[index]['alarmSwitch']) {
+  //     DateTime dt1 = DateTime.parse(alarmList[index]['dateTime']);
+  //     Duration diff = dt1.difference(DateTime.now());
+
+  //     // If the difference is negative, add one day to make it positive
+  //     if (diff.inSeconds < 0) {
+  //       diff = diff.abs();
+  //       diff += const Duration(days: 1);
+  //     }
+
+  //     // Update minDiff if the current diff is smaller
+  //     if (minDiff.inSeconds > diff.inSeconds) {
+  //       minDiff = diff;
+  //     }
+  //   }
+
+  //   int totalHours = minDiff.inHours;
+  //   int totalMinutes = minDiff.inMinutes;
+  //   int days = minDiff.inDays;
+  //   int hours = totalHours.abs() % 24;
+  //   int minutes = totalMinutes.abs() % 60;
+
+  //   // If the alarm is scheduled for the next day, adjust hours and minutes
+  //   if (days.abs() == 1 && hours.abs() == 0 && minutes.abs() == 0) {
+  //     hours = 24;
+  //     minutes = 0;
+  //     days = 0;
+  //   }
+
+  //   if (days.abs() == 0 && hours.abs() == 0 && minutes.abs() == 0) {
+  //     return 'Alarm is ringing now';
+  //   } else {
+  //     return 'Next alarm in $days day(s) $hours hour(s) $minutes minute(s)';
+  //   }
+  // }
+
+  String getAlarmTimeRemaining({required int index}) {
+    Duration minDiff = const Duration(days: 365);
+    if (alarmList[index]['alarmSwitch']) {
+      DateTime dt1 = DateTime.parse(alarmList[index]['dateTime']);
+      Duration diff = dt1.difference(DateTime.now());
+
+      // If the difference is negative, adjust it to be negative 23 hours and 59 minutes
+      if (diff.inSeconds < 0) {
+        diff = const Duration(hours: 23, minutes: 59) - diff.abs();
+      }
+
+      // Update minDiff if the current diff is smaller
+      if (minDiff.inSeconds > diff.inSeconds) {
+        minDiff = diff;
+      }
+    }
+
+    int totalHours = minDiff.inHours;
+    int totalMinutes = minDiff.inMinutes;
+    int days = minDiff.inDays;
+    int hours = totalHours.abs() % 24;
+    int minutes = totalMinutes.abs() % 60;
+
+    // If the alarm is scheduled for the next day, adjust hours and minutes
+    if (days.abs() == 1 && hours.abs() == 0 && minutes.abs() == 0) {
+      hours = 24;
+      minutes = 0;
+      days = 0;
+    }
+
+    if (days.abs() == 0 && hours.abs() == 0 && minutes.abs() == 0) {
+      return 'Alarm is ringing now';
+    } else if (days.abs() == 0) {
+      return 'Next alarm in $hours hour $minutes minute';
+    } else {
+      return 'Next alarm in $days day(s) $hours hour(s) $minutes minute(s)';
+    }
+  }
 }

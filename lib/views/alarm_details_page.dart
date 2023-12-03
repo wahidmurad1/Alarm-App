@@ -411,81 +411,76 @@ class CustomAlarmShow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: width - 40,
-          height: 50,
-          decoration: BoxDecoration(
-            // color: cBlackColor,
-            borderRadius: BorderRadius.circular(90),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Expanded(
-              //   child: ListView.builder(
-              //       scrollDirection: Axis.horizontal,
-              //       itemCount: alarmChangeNotifier.days.length,
-              //       itemBuilder: (context, index) {
-              //         return Padding(
-              //           padding: const EdgeInsets.symmetric(horizontal: 8),
-              //           child: Text(
-              //             alarmChangeNotifier.days[index].toString(),
-              //             style: semiBold16TextStyle(cBlackColor),
-              //           ),
-              //         );
-              //       }),
-              // ),
-              for (int index = 0; index < alarmChangeNotifier.days.length; index++)
-                InkWell(
-                  //*first
-                  onTap: () {
-                    ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state = !ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state;
-                    alarmChangeNotifier.updateState();
-                    if (ref.watch(alarmChangeNotifier.isDaySelected(index))) {
-                      // alarmChangeNotifier.tempCustomDays.add(alarmChangeNotifier.days[index]);
-                      alarmChangeNotifier.selectedDayState[index] = true;
-                    } else {
-                      // alarmChangeNotifier.tempCustomDays.remove(alarmChangeNotifier.days[index]);
-                      alarmChangeNotifier.selectedDayState[index] = false;
-                    }
-                    // if (alarmChangeNotifier.selectedDayState[index] == true) {
-                    //   alarmChangeNotifier.tempCustomDays.add(alarmChangeNotifier.days[index]);
-                    // } else {
-                    //   alarmChangeNotifier.tempCustomDays.remove(alarmChangeNotifier.days[index]);
-                    // }
+    return Container(
+      width: width,
+      height: 50,
+      decoration: BoxDecoration(
+        // color: cBlackColor,
+        borderRadius: BorderRadius.circular(90),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Expanded(
+          //   child: ListView.builder(
+          //       scrollDirection: Axis.horizontal,
+          //       itemCount: alarmChangeNotifier.days.length,
+          //       itemBuilder: (context, index) {
+          //         return Padding(
+          //           padding: const EdgeInsets.symmetric(horizontal: 8),
+          //           child: Text(
+          //             alarmChangeNotifier.days[index].toString(),
+          //             style: semiBold16TextStyle(cBlackColor),
+          //           ),
+          //         );
+          //       }),
+          // ),
+          for (int index = 0; index < alarmChangeNotifier.days.length; index++)
+            InkWell(
+              //*first
+              onTap: () {
+                ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state = !ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state;
+                alarmChangeNotifier.updateState();
+                if (ref.watch(alarmChangeNotifier.isDaySelected(index))) {
+                  // alarmChangeNotifier.tempCustomDays.add(alarmChangeNotifier.days[index]);
+                  alarmChangeNotifier.selectedDayState[index] = true;
+                } else {
+                  // alarmChangeNotifier.tempCustomDays.remove(alarmChangeNotifier.days[index]);
+                  alarmChangeNotifier.selectedDayState[index] = false;
+                }
+                // if (alarmChangeNotifier.selectedDayState[index] == true) {
+                //   alarmChangeNotifier.tempCustomDays.add(alarmChangeNotifier.days[index]);
+                // } else {
+                //   alarmChangeNotifier.tempCustomDays.remove(alarmChangeNotifier.days[index]);
+                // }
 
-                    // log(alarmChangeNotifier.tempCustomDays.toString());
-                    // log(alarmChangeNotifier.selectedDayState.toString());
-                  },
+                // log(alarmChangeNotifier.tempCustomDays.toString());
+                // log(alarmChangeNotifier.selectedDayState.toString());
+              },
 
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                          color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : cTransparentColor,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : Colors.grey)),
-                      child: Center(
-                        child: Text(
-                          alarmChangeNotifier.days[index].toString(),
-                          textAlign: TextAlign.center,
-                          style: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state
-                              ? semiBold14TextStyle(cWhiteColor)
-                              : semiBold14TextStyle(Colors.grey),
-                        ),
-                      ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                      color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : cTransparentColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : Colors.grey)),
+                  child: Center(
+                    child: Text(
+                      alarmChangeNotifier.days[index].toString(),
+                      textAlign: TextAlign.center,
+                      style: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state
+                          ? semiBold14TextStyle(cWhiteColor)
+                          : semiBold14TextStyle(Colors.grey),
                     ),
                   ),
                 ),
-            ],
-          ),
-        ),
-      ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:alarm/alarm.dart';
 import 'package:alarm_app/sp_controller.dart';
 import 'package:day_picker/day_picker.dart';
@@ -14,7 +15,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   Future<void> onInit() async {
     alarmList = await SpController().getAlarmList();
     themeType = await SpController().loadThemeType();
-
+    // log('on init ${alarmList.toString()}');
     notifyListeners();
   }
 
@@ -63,6 +64,10 @@ class AlarmChangeNotifier extends ChangeNotifier {
   final themeTypeProvider = StateProvider<bool>((ref) => true);
   bool themeType = true;
   int alarmId = -1;
+  String labelValue = 'Alarm';
+  final hourProvider = StateProvider<int>((ref) => 0);
+  final minuteProvider = StateProvider<int>((ref) => 0);
+  final secondProvider = StateProvider<int>((ref) => 0);
 
   void pickTime(time) {
     selectedDateTime = time;
@@ -82,9 +87,10 @@ class AlarmChangeNotifier extends ChangeNotifier {
     var id = DateTime.now().millisecondsSinceEpoch % 10000;
     Map<String, dynamic> alarmDetails = {
       "id": id,
+      "label": labelValue,
       "time": pickedTime,
       "dateTime": dateTimeValue.toString(),
-      "repeat": repeatTypeValue,
+      "repeat": repeatTypeValue != 'Custom' ? repeatTypeValue : customDays.join(', '),
       "vibration": vibrationSwitchState,
       "ringtone": ringtoneNameValue,
       "alarmSwitch": true,
@@ -114,11 +120,12 @@ class AlarmChangeNotifier extends ChangeNotifier {
   void editAlarm(id, context) async {
     for (int i = 0; i < alarmList.length; i++) {
       if (alarmList[i]['id'] == id) {
+        alarmList[i]['label'] = labelValue;
         alarmList[i]['time'] = pickedTime;
         alarmList[i]['dateTime'] = dateTimeValue.toString();
-        alarmList[i]['repeat'] = repeatTypeValue;
+        alarmList[i]['repeat'] = repeatTypeValue != 'Custom' ? repeatTypeValue : customDays.join(', ');
         alarmList[i]['vibration'] = vibrationSwitchState;
-        alarmList[i]['ringtone'] = ringtoneNameValue == "" ? 'assets/alarm.mp3' : ringtoneNameValue;
+        alarmList[i]['ringtone'] = ringtoneNameValue;
         alarmList[i]['alarmSwitch'] = true;
         alarmList[i]['clockStyle'] = clockStyleValue;
         await SpController().deleteAllData();
@@ -168,28 +175,48 @@ class AlarmChangeNotifier extends ChangeNotifier {
   }
 
   final isPlay = StateProvider<bool>((ref) => true);
-  //* Day List for day picker package
-  List<DayInWeek> days = [
-    DayInWeek("Sun", dayKey: "Sun"),
-    DayInWeek("Mon", dayKey: "Mon"),
-    DayInWeek("Tue", dayKey: "Tue"),
-    DayInWeek(
-      "Wed",
-      dayKey: "Wed",
-    ),
-    DayInWeek(
-      "Thu",
-      dayKey: "Thu",
-    ),
-    DayInWeek(
-      "Fri",
-      dayKey: "Fri",
-    ),
-    DayInWeek(
-      "Sat",
-      dayKey: "Sat",
-    ),
+  // List<DayInWeek> days = [
+  //   DayInWeek("Sun", dayKey: "Sun"),
+  //   DayInWeek("Mon", dayKey: "Mon"),
+  //   DayInWeek("Tue", dayKey: "Tue"),
+  //   DayInWeek(
+  //     "Wed",
+  //     dayKey: "Wed",
+  //   ),
+  //   DayInWeek(
+  //     "Thu",
+  //     dayKey: "Thu",
+  //   ),
+  //   DayInWeek(
+  //     "Fri",
+  //     dayKey: "Fri",
+  //   ),
+  //   DayInWeek(
+  //     "Sat",
+  //     dayKey: "Sat",
+  //   ),
+  // ];
+  final List<String> days = [
+    'sun',
+    'mon',
+    'tue',
+    'wed',
+    'thu',
+    'fri',
+    'sat',
   ];
+  final List<bool> selectedDayState = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+
+   final isDaySelected = StateProvider.family<bool, int>((ref, index) => false);
+
   List<String> tempCustomDays = [];
   List<String> customDays = [];
 }

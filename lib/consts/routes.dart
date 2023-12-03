@@ -3,6 +3,7 @@ import 'package:alarm_app/views/alarm_details_page.dart';
 import 'package:alarm_app/views/alarm_page.dart';
 import 'package:alarm_app/views/alarm_ring_page.dart';
 import 'package:alarm_app/views/stop_watch_page.dart';
+import 'package:alarm_app/views/timer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

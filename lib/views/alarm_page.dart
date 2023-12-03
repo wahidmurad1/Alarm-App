@@ -63,12 +63,7 @@ class AlarmPage extends ConsumerWidget {
                       ref.invalidate(alarmChangeNotifier.ringtoneName);
                       ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                       alarmChangeNotifier.repeatTypeValue = 'Ring once';
-
-                      // alarmChangeNotifier.tempCustomDays.clear();
-                      // alarmChangeNotifier.customDays.clear();
-                      // DateTime now = DateTime.now();
-                      // log("${now.weekday >= DateTime.sunday}");
-                      // log("${now.weekday <= DateTime.thursday}");
+                      // log('${DateTime.now().weekday == DateTime.saturday}');
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => const AlarmDetailsPage()),
                       );
@@ -171,7 +166,21 @@ class AlarmPage extends ConsumerWidget {
                                         trackColor: const Color.fromARGB(255, 220, 218, 218),
                                         value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
                                         onChanged: (value) async {
-                                          log(item['repeat']);
+                                          DateTime now = DateTime.now();
+                                          log('in cupertino switch ${now.weekday >= DateTime.sunday}');
+                                          log('in cupertino switch ${now.weekday <= DateTime.thursday}');
+                                          // if (alarmChangeNotifier.alarmList[index]['repeat'] != 'Ring once' &&
+                                          //     alarmChangeNotifier.alarmList[index]['repeat'] != 'Everyday' &&
+                                          //     alarmChangeNotifier.alarmList[index]['repeat'] != 'Sunday-Thursday') {
+                                          //   final selectedCustomDays = alarmChangeNotifier.alarmList[index]['repeat'];
+                                          //   log('saturday ${selectedCustomDays.weekday == DateTime.saturday}');
+                                          //   log('sun ${selectedCustomDays.weekday == DateTime.sunday}');
+                                          //   log('mon ${selectedCustomDays.weekday == DateTime.monday}');
+                                          //   log('tue ${selectedCustomDays.weekday == DateTime.tuesday}');
+                                          //   log('wed ${selectedCustomDays.weekday == DateTime.wednesday}');
+                                          //   log('thurs ${selectedCustomDays.weekday == DateTime.thursday}');
+                                          //   log('fri ${selectedCustomDays.weekday == DateTime.friday}');
+                                          // }
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             Alarm.stop(item['id']);
@@ -199,6 +208,38 @@ class AlarmPage extends ConsumerWidget {
                                           for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
                                             await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
                                           }
+                                          if (alarmChangeNotifier.alarmList[index]['repeat'] == 'Sunday-Thursday') {
+                                            DateTime now = DateTime.now();
+                                            log('${now.weekday >= DateTime.sunday}');
+                                            log('${now.weekday <= DateTime.thursday}');
+                                            if (now.weekday >= DateTime.sunday && now.weekday <= DateTime.thursday) {
+                                              // Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                                              alarmChangeNotifier.alarmList[index]['alarmSwitch'] = true;
+                                              DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[index]['dateTime']);
+                                              selectedDateTime = selectedDateTime.add(const Duration(days: 1));
+                                              alarmChangeNotifier.alarmList[index]['dateTime'] = selectedDateTime.toString();
+                                              final newAlarmSettings = AlarmSettings(
+                                                id: alarmChangeNotifier.alarmList[index]['id'],
+                                                dateTime: selectedDateTime,
+                                                assetAudioPath: alarmChangeNotifier.alarmList[index]['ringtone'],
+                                                loopAudio: true,
+                                                vibrate: alarmChangeNotifier.alarmList[index]['vibration'],
+                                                // volumeMax: true,
+                                                fadeDuration: 3.0,
+                                                notificationTitle: 'This is the title',
+                                                notificationBody: 'This is the body',
+                                                enableNotificationOnKill: true,
+                                              );
+                                              Alarm.set(alarmSettings: newAlarmSettings);
+                                              Alarm.set(alarmSettings: newAlarmSettings);
+                                              await SpController().deleteAllData();
+                                              for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                                                await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
+                                              }
+                                              alarmChangeNotifier.alarmList.clear();
+                                              alarmChangeNotifier.alarmList = await SpController().getAlarmList();
+                                            }
+                                          }
                                         },
                                       ),
                                     ),
@@ -213,29 +254,32 @@ class AlarmPage extends ConsumerWidget {
                   ),
                 ),
           ref.watch(alarmChangeNotifierProvider).alarmList.isEmpty
-              ? SizedBox(
-                  width: width - 40,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: cPrimaryColor,
-                        ),
-                        onPressed: () {
-                          ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
-                          ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
-                          ref.invalidate(alarmChangeNotifier.alarmActionSelect);
-                          ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
-                          alarmChangeNotifier.repeatTypeValue = 'Ring once';
-                          ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
-                        },
-                        child: Text(
-                          'Add Alarm',
-                          style: semiBold18TextStyle(cWhiteColor),
-                        )),
-                  ))
+              ? ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: cPrimaryColor,
+                  ),
+                  onPressed: () {
+                    ref.invalidate(alarmChangeNotifier.pickedTimeProvider);
+                    ref.invalidate(alarmChangeNotifier.tempAlarmActionSelect);
+                    ref.invalidate(alarmChangeNotifier.alarmActionSelect);
+                    ref.invalidate(alarmChangeNotifier.vibrationSwitchProvider);
+                    ref.invalidate(alarmChangeNotifier.ringtoneName);
+                    ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
+                    alarmChangeNotifier.repeatTypeValue = 'Ring once';
+                    // log('${DateTime.now().weekday == DateTime.saturday}');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const AlarmDetailsPage()),
+                    );
+                  },
+                  child: Text(
+                    'Add Alarm',
+                    style: semiBold16TextStyle(cWhiteColor),
+                  ),
+                )
               : const SizedBox(),
+          const SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );

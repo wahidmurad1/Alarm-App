@@ -48,6 +48,7 @@ dependencies:
   toggle_switch: ^2.1.0
   stop_watch_timer: ^3.0.2
   day_picker: ^2.2.0
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:

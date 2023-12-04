@@ -202,6 +202,13 @@ class AlarmChangeNotifier extends ChangeNotifier {
     6,
     7,
   ];
+  final List<int> weekSpecificIndex = [
+    7,
+    1,
+    2,
+    3,
+    4,
+  ];
   List<String> customDays = [];
   List<int> customWeekDaysIndex = [];
 
@@ -240,20 +247,23 @@ class AlarmChangeNotifier extends ChangeNotifier {
     } else if (alarmList[index]['alarmSwitch'] == false) {
       return '';
     } else {
-      return 'Next alarm in $days day(s) $hours hour(s) $minutes minute(s)';
+      return 'Next alarm in $days day $hours hour $minutes minute';
     }
   }
 
   DateTime calculateNextCustomDays(DateTime selectedDateTime, List<int> customWeekDaysIndex) {
     int currentDay = selectedDateTime.weekday;
     customWeekDaysIndex.sort();
+    log('From Week days Sort List index ${customWeekDaysIndex.toString()}');
     for (int day in customWeekDaysIndex) {
       if (day >= currentDay) {
         int daysToAdd = day - currentDay;
+        log('In day Difference ${daysToAdd.toString()}');
         return selectedDateTime.add(Duration(days: daysToAdd));
       }
     }
     int daysToAdd = (customWeekDaysIndex.first - currentDay) + 7;
+    log('In day Difference ${daysToAdd.toString()}');
     return selectedDateTime.add(Duration(days: daysToAdd));
   }
 }

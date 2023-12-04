@@ -64,6 +64,7 @@ class AlarmPage extends ConsumerWidget {
                       ref.read(alarmChangeNotifier.isEdit.notifier).state = false;
                       alarmChangeNotifier.repeatTypeValue = 'Ring once';
                       alarmChangeNotifier.customDays.clear();
+                      alarmChangeNotifier.customDays.clear();
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => const AlarmDetailsPage()),
                       );
@@ -171,8 +172,33 @@ class AlarmPage extends ConsumerWidget {
                                         value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
                                         onChanged: (value) async {
                                           DateTime now = DateTime.now();
-                                          log('in cupertino switch ${now.weekday >= DateTime.sunday}');
-                                          log('in cupertino switch ${now.weekday <= DateTime.thursday}');
+                                          // log('in cupertino switch ${now.weekday >= DateTime.sunday}');
+                                          // log('in cupertino switch ${now.weekday >= DateTime.sunday || now.weekday <= DateTime.thursday}');
+                                          // int currentDayOfWeek = DateTime.now().weekday;
+                                          // int daysUntilNextAlarm = 7;
+                                          // for (int alarmDay in alarmChangeNotifier.customWeekDaysIndex) {
+                                          //   int diff;
+                                          //   if (alarmDay >= currentDayOfWeek) {
+                                          //     diff = alarmDay - currentDayOfWeek;
+                                          //     // log(diff.toString());
+                                          //   } else {
+                                          //     diff = alarmDay + 7 - currentDayOfWeek;
+                                          //     // log(diff.toString());
+                                          //   }
+                                          //   if (diff < daysUntilNextAlarm) {
+                                          //     daysUntilNextAlarm = diff;
+                                          //     // log(daysUntilNextAlarm.toString());
+                                          //   }
+                                          // }
+                                          // log(selectedCustomDays);
+                                          // log(alarmChangeNotifier.customWeekDaysIndex.toString());
+                                          // log(alarmChangeNotifier.customWeekDaysIndex.toString());
+                                          // final selectedCustomDays = alarmChangeNotifier.alarmList[index]['repeat'];
+                                          // // log('The days is : ${selectedCustomDays.weekday}'.toString());
+                                          // // log(selectedCustomDays.weekday);
+                                          // log(DateTime.monday.toString());
+                                          // log('Current day index is : ${selectedCustomDays.weekday == DateTime.saturday}');
+                                          // log((now.weekday == DateTime.tuesday).toString());
                                           // if (alarmChangeNotifier.alarmList[index]['repeat'] != 'Ring once' &&
                                           //     alarmChangeNotifier.alarmList[index]['repeat'] != 'Everyday' &&
                                           //     alarmChangeNotifier.alarmList[index]['repeat'] != 'Sunday-Thursday') {
@@ -185,6 +211,8 @@ class AlarmPage extends ConsumerWidget {
                                           //   log('thurs ${selectedCustomDays.weekday == DateTime.thursday}');
                                           //   log('fri ${selectedCustomDays.weekday == DateTime.friday}');
                                           // }
+                                          log('${now.weekday == DateTime.sunday}');
+                                          log(DateTime.sunday.toString());
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             Alarm.stop(item['id']);

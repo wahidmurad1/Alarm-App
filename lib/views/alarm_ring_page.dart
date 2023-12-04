@@ -85,6 +85,12 @@ class AlarmRingScreen extends ConsumerWidget {
                         } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Sunday-Thursday') {
                           DateTime now = DateTime.now();
                           if (now.weekday >= DateTime.sunday && now.weekday <= DateTime.thursday) {
+                            // }
+                            // if (now.weekday == DateTime.sunday ||
+                            //     now.weekday == DateTime.monday ||
+                            //     now.weekday == DateTime.tuesday ||
+                            //     now.weekday == DateTime.wednesday ||
+                            //     now.weekday == DateTime.thursday) {
                             Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                             alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
                             DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
@@ -112,40 +118,42 @@ class AlarmRingScreen extends ConsumerWidget {
                             alarmChangeNotifier.alarmList = await SpController().getAlarmList();
                           }
                         } else {
-                          final selectedCustomDays = alarmChangeNotifier.alarmList[i]['repeat'];
-                          if (selectedCustomDays.weekday == DateTime.saturday ||
-                              selectedCustomDays.weekday == DateTime.sunday ||
-                              selectedCustomDays.weekday == DateTime.monday ||
-                              selectedCustomDays.weekday == DateTime.tuesday ||
-                              selectedCustomDays.weekday == DateTime.wednesday ||
-                              selectedCustomDays.weekday == DateTime.thursday ||
-                              selectedCustomDays.weekday == DateTime.friday) {
-                            Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
-                            alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
-                            DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
-                            selectedDateTime = selectedDateTime.add(const Duration(days: 1));
-                            alarmChangeNotifier.alarmList[i]['dateTime'] = selectedDateTime.toString();
-                            final newAlarmSettings = AlarmSettings(
-                              id: alarmChangeNotifier.alarmList[i]['id'],
-                              dateTime: selectedDateTime,
-                              assetAudioPath: alarmChangeNotifier.alarmList[i]['ringtone'],
-                              loopAudio: true,
-                              vibrate: alarmChangeNotifier.alarmList[i]['vibration'],
-                              volumeMax: true,
-                              fadeDuration: 3.0,
-                              notificationTitle: 'This is the title',
-                              notificationBody: 'This is the body',
-                              enableNotificationOnKill: true,
-                            );
-                            Alarm.set(alarmSettings: newAlarmSettings);
-                            Alarm.set(alarmSettings: newAlarmSettings);
-                            await SpController().deleteAllData();
-                            for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
-                              await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
-                            }
-                            alarmChangeNotifier.alarmList.clear();
-                            alarmChangeNotifier.alarmList = await SpController().getAlarmList();
+                          // final selectedCustomDays = alarmChangeNotifier.alarmList[i]['repeat'];
+                          // if (selectedCustomDays.weekday == DateTime.saturday ||
+                          //     selectedCustomDays.weekday == DateTime.sunday ||
+                          //     selectedCustomDays.weekday == DateTime.monday ||
+                          //     selectedCustomDays.weekday == DateTime.tuesday ||
+                          //     selectedCustomDays.weekday == DateTime.wednesday ||
+                          //     selectedCustomDays.weekday == DateTime.thursday ||
+                          //     selectedCustomDays.weekday == DateTime.friday) {
+                          // await Alarm.stop(alarmChangeNotifier.alarmList[i]['id']);
+                          Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                          alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
+                          // DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
+                          //  DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
+                          DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
+                          selectedDateTime = alarmChangeNotifier.calculateNextCustomDays(selectedDateTime, alarmChangeNotifier.customWeekDaysIndex);
+                          alarmChangeNotifier.alarmList[i]['dateTime'] = selectedDateTime.toString();
+                          final newAlarmSettings = AlarmSettings(
+                            id: alarmChangeNotifier.alarmList[i]['id'],
+                            dateTime: selectedDateTime,
+                            assetAudioPath: alarmChangeNotifier.alarmList[i]['ringtone'],
+                            loopAudio: true,
+                            vibrate: alarmChangeNotifier.alarmList[i]['vibration'],
+                            volumeMax: true,
+                            fadeDuration: 3.0,
+                            notificationTitle: 'This is the title',
+                            notificationBody: 'This is the body',
+                            enableNotificationOnKill: true,
+                          );
+                          Alarm.set(alarmSettings: newAlarmSettings);
+                          await SpController().deleteAllData();
+                          for (int i = 0; i < alarmChangeNotifier.alarmList.length; i++) {
+                            await SpController().saveAlarmList(alarmChangeNotifier.alarmList[i]);
                           }
+                          alarmChangeNotifier.alarmList.clear();
+                          alarmChangeNotifier.alarmList = await SpController().getAlarmList();
+                          // }
                         }
                       }
                     }

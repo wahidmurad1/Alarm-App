@@ -164,9 +164,11 @@ class AlarmDetailsPage extends ConsumerWidget {
                           },
                           onPressRightButton: () {
                             alarmChangeNotifier.customDays.clear();
+                            alarmChangeNotifier.customWeekDaysIndex.clear();
                             for (int i = 0; i < alarmChangeNotifier.selectedDayState.length; i++) {
                               if (alarmChangeNotifier.selectedDayState[i] == true) {
                                 alarmChangeNotifier.customDays.add(alarmChangeNotifier.days[i]);
+                                alarmChangeNotifier.customWeekDaysIndex.add(alarmChangeNotifier.weekDaysIndex[i]);
                               }
                             }
 
@@ -371,7 +373,9 @@ class AlarmActionContent extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: CustomListTile(
                 title: alarmChangeNotifier.repeatType[index].toString(),
-                titleTextStyle: semiBold16TextStyle(cBlackColor),
+                titleTextStyle: semiBold16TextStyle(Theme.of(context).colorScheme.secondary),
+                // borderColor:
+                //     ref.watch(alarmChangeNotifier.isRepeatSelected(index)) == alarmChangeNotifier.repeatType[index] ? cPrimaryColor : cTransparentColor,
                 trailing: Consumer(
                   builder: (context, ref, child) {
                     return CustomRadioButton(
@@ -390,6 +394,7 @@ class AlarmActionContent extends ConsumerWidget {
                 itemColor: ref.watch(alarmChangeNotifier.tempAlarmActionSelect) == alarmChangeNotifier.repeatType[index] ? cPrimaryTint3Color : cWhiteColor,
                 onPressed: () {
                   ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state = alarmChangeNotifier.repeatType[index];
+                  // alarmChangeNotifier.isRepeatSelected = true;
                   // if (ref.read(alarmChangeNotifier.tempAlarmActionSelect.notifier).state == '') {
                   //   ref.read(isBottomSheetRightButtonActive.notifier).state = false;
                   // } else {
@@ -411,76 +416,43 @@ class CustomAlarmShow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmChangeNotifier = ref.watch(alarmChangeNotifierProvider);
-    return Container(
-      width: width,
-      height: 50,
-      decoration: BoxDecoration(
-        // color: cBlackColor,
-        borderRadius: BorderRadius.circular(90),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Expanded(
-          //   child: ListView.builder(
-          //       scrollDirection: Axis.horizontal,
-          //       itemCount: alarmChangeNotifier.days.length,
-          //       itemBuilder: (context, index) {
-          //         return Padding(
-          //           padding: const EdgeInsets.symmetric(horizontal: 8),
-          //           child: Text(
-          //             alarmChangeNotifier.days[index].toString(),
-          //             style: semiBold16TextStyle(cBlackColor),
-          //           ),
-          //         );
-          //       }),
-          // ),
-          for (int index = 0; index < alarmChangeNotifier.days.length; index++)
-            InkWell(
-              //*first
-              onTap: () {
-                ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state = !ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state;
-                alarmChangeNotifier.updateState();
-                if (ref.watch(alarmChangeNotifier.isDaySelected(index))) {
-                  // alarmChangeNotifier.tempCustomDays.add(alarmChangeNotifier.days[index]);
-                  alarmChangeNotifier.selectedDayState[index] = true;
-                } else {
-                  // alarmChangeNotifier.tempCustomDays.remove(alarmChangeNotifier.days[index]);
-                  alarmChangeNotifier.selectedDayState[index] = false;
-                }
-                // if (alarmChangeNotifier.selectedDayState[index] == true) {
-                //   alarmChangeNotifier.tempCustomDays.add(alarmChangeNotifier.days[index]);
-                // } else {
-                //   alarmChangeNotifier.tempCustomDays.remove(alarmChangeNotifier.days[index]);
-                // }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for (int index = 0; index < alarmChangeNotifier.days.length; index++)
+          InkWell(
+            //*first
+            onTap: () {
+              ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state = !ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state;
+              alarmChangeNotifier.updateState();
+              if (ref.watch(alarmChangeNotifier.isDaySelected(index))) {
+                alarmChangeNotifier.selectedDayState[index] = true;
+              } else {
+                alarmChangeNotifier.selectedDayState[index] = false;
+              }
+            },
 
-                // log(alarmChangeNotifier.tempCustomDays.toString());
-                // log(alarmChangeNotifier.selectedDayState.toString());
-              },
-
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                      color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : cTransparentColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : Colors.grey)),
-                  child: Center(
-                    child: Text(
-                      alarmChangeNotifier.days[index].toString(),
-                      textAlign: TextAlign.center,
-                      style: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state
-                          ? semiBold14TextStyle(cWhiteColor)
-                          : semiBold14TextStyle(Colors.grey),
-                    ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                    color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : cTransparentColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? cPrimaryColor : Colors.grey)),
+                child: Center(
+                  child: Text(
+                    alarmChangeNotifier.days[index].toString(),
+                    textAlign: TextAlign.center,
+                    style:
+                        ref.read(alarmChangeNotifier.isDaySelected(index).notifier).state ? semiBold14TextStyle(cWhiteColor) : semiBold14TextStyle(Colors.grey),
                   ),
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

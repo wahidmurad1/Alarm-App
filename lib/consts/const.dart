@@ -107,3 +107,10 @@ TextStyle regular12TextStyle(Color color) {
   return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h12, 2), color: color);
 }
 
+TextStyle regular14TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h14, 2), color: color);
+}
+
+TextStyle regular16TextStyle(Color color) {
+  return TextStyle(fontWeight: FontWeight.w400, fontSize: screenWiseSize(h16, 2), color: color);
+}

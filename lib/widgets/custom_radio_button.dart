@@ -18,7 +18,7 @@ class CustomRadioButton extends StatelessWidget {
       decoration: (Theme.of(context).platform == TargetPlatform.iOS)
           ? null
           : ShapeDecoration(
-              shape: CircleBorder(side: BorderSide(color: isSelected ? cIconColor : cIconColor, width: 1.6)),
+              shape: CircleBorder(side: BorderSide(color: isSelected ? cPrimaryColor : cIconColor, width: 1.6)),
               color: cTransparentColor,
             ),
       child: Center(

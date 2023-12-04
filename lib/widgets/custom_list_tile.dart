@@ -28,12 +28,14 @@ class CustomListTile extends StatelessWidget {
   final double spacing;
   final TextStyle? titleTextStyle;
   final TextStyle? subTitleTextStyle;
+  // final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(),
       decoration: BoxDecoration(
+        // color: Theme.of(context).,
         color: itemColor,
         border: Border.all(color: borderColor ?? itemColor),
         borderRadius: BorderRadius.circular(8),

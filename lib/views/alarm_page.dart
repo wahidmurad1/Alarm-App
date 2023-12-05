@@ -112,6 +112,7 @@ class AlarmPage extends ConsumerWidget {
                             ref.read(alarmChangeNotifier.isEdit.notifier).state = true;
                             alarmChangeNotifier.alarmId = item['id'];
                             ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = item['repeat'];
+                            ref.read(alarmChangeNotifier.alarmActionSelect.notifier).state = item['repeat'];
                             ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item['vibration'];
                             ref.read(alarmChangeNotifier.ringtoneName.notifier).state = item['ringtone'];
                             ref.read(alarmChangeNotifier.clockStyleState.notifier).state = item['clockStyle'];
@@ -172,7 +173,7 @@ class AlarmPage extends ConsumerWidget {
                                         trackColor: const Color.fromARGB(255, 220, 218, 218),
                                         value: alarmChangeNotifier.alarmList[index]['alarmSwitch'],
                                         onChanged: (value) async {
-                                          DateTime now = DateTime.now();
+                                          // DateTime now = DateTime.now();
                                           // log('in cupertino switch ${now.weekday >= DateTime.sunday}');
                                           // log('in cupertino switch ${now.weekday >= DateTime.sunday || now.weekday <= DateTime.thursday}');
                                           // int currentDayOfWeek = DateTime.now().weekday;

@@ -59,7 +59,6 @@ class AlarmChangeNotifier extends ChangeNotifier {
   String clockStyleValue = '12 Hours';
   final isEdit = StateProvider<bool>((ref) => false);
   DateTime selectedDateTime = DateTime.now();
-  // DateTime dateTimeValue = DateTime.now();
   final themeTypeProvider = StateProvider<bool>((ref) => true);
   bool themeType = true;
   int alarmId = -1;
@@ -133,6 +132,20 @@ class AlarmChangeNotifier extends ChangeNotifier {
   }
 
   void editAlarm(id, context) async {
+    if (repeatTypeValue == 'Custom') {
+      int closingDay = 8;
+      for (int i = 0; i < customDays.length; i++) {
+        // if(selectedDayState[i]==true){
+        //   customDays.add(days[i]);
+        // }
+        if (closingDay > getCustomDaysRemaining(customDays[i])) {
+          closingDay = getCustomDaysRemaining(customDays[i]);
+          log(closingDay.toString());
+        }
+        // updateState();
+      }
+      selectedDateTime = selectedDateTime.add(Duration(days: closingDay));
+    }
     for (int i = 0; i < alarmList.length; i++) {
       if (alarmList[i]['id'] == id) {
         alarmList[i]['label'] = labelValue;
@@ -151,7 +164,8 @@ class AlarmChangeNotifier extends ChangeNotifier {
         // alarmList.clear();
         alarmList = await SpController().getAlarmList();
         Navigator.pop(context);
-        alarmList[i]['dateTime'] = selectedDateTime.toString();
+
+        // alarmList[i]['dateTime'] = selectedDateTime.toString();
         final alarmSettings = AlarmSettings(
           id: alarmList[i]['id'],
           dateTime: selectedDateTime,
@@ -287,15 +301,15 @@ class AlarmChangeNotifier extends ChangeNotifier {
 
     // If no suitable day is found in the current week, move to the next week
     int daysToAdd = (customWeekDaysIndex.first - currentDay + 7) % 7;
-    log('In day Difference ${daysToAdd.toString()}');
-    log('Next Alarm Schedule ${selectedDateTime.toString()}');
-    log('Selected Day Index ${customWeekDaysIndex.first.toString()}');
-    log('Current Day Index ${currentDay.toString()}');
+    // log('In day Difference ${daysToAdd.toString()}');
+    // log('Next Alarm Schedule ${selectedDateTime.toString()}');
+    // log('Selected Day Index ${customWeekDaysIndex.first.toString()}');
+    // log('Current Day Index ${currentDay.toString()}');
 
     return selectedDateTime.add(Duration(days: daysToAdd));
   }
 
-   DateTime calculateNextSundayToThursday(DateTime selectedDateTime) {
+  DateTime calculateNextSundayToThursday(DateTime selectedDateTime) {
     int currentDay = selectedDateTime.weekday;
     if (currentDay >= 1 && currentDay <= 4) {
       int daysToAdd = 1;

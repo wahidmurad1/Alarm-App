@@ -115,7 +115,7 @@ class AlarmPage extends ConsumerWidget {
                             ref.read(alarmChangeNotifier.vibrationSwitchProvider.notifier).state = item['vibration'];
                             ref.read(alarmChangeNotifier.ringtoneName.notifier).state = item['ringtone'];
                             ref.read(alarmChangeNotifier.clockStyleState.notifier).state = item['clockStyle'];
-                            alarmChangeNotifier.dateTimeValue = DateTime.parse(item['dateTime']);
+                            alarmChangeNotifier.selectedDateTime = DateTime.parse(item['dateTime']);
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AlarmDetailsPage()));
                           }
                         },
@@ -212,8 +212,6 @@ class AlarmPage extends ConsumerWidget {
                                           //   log('thurs ${selectedCustomDays.weekday == DateTime.thursday}');
                                           //   log('fri ${selectedCustomDays.weekday == DateTime.friday}');
                                           // }
-                                          log('${now.weekday == DateTime.sunday}');
-                                          log(DateTime.sunday.toString());
                                           ref.read(alarmChangeNotifier.switchProvider(index).notifier).state = value;
                                           if (!ref.read(alarmChangeNotifier.switchProvider(index).notifier).state == true) {
                                             Alarm.stop(item['id']);

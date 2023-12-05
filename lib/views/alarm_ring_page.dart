@@ -88,10 +88,15 @@ class AlarmRingScreen extends ConsumerWidget {
                           alarmChangeNotifier.alarmList = await SpController().getAlarmList();
                         } else if (alarmChangeNotifier.alarmList[i]['repeat'] == 'Sunday-Thusday') {
                           log(alarmChangeNotifier.alarmList[i]['repeat']);
+                          // Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
+                          // alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
+                          // DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
+                          // selectedDateTime = alarmChangeNotifier.calculateNextCustomDays(selectedDateTime, alarmChangeNotifier.weekSpecificIndex);
+                          // alarmChangeNotifier.alarmList[i]['dateTime'] = selectedDateTime.toString();
                           Alarm.stop(alarmSettings!.id).then((_) => Navigator.pop(context));
                           alarmChangeNotifier.alarmList[i]['alarmSwitch'] = true;
                           DateTime selectedDateTime = DateTime.parse(alarmChangeNotifier.alarmList[i]['dateTime']);
-                          selectedDateTime = alarmChangeNotifier.calculateNextCustomDays(selectedDateTime, alarmChangeNotifier.weekSpecificIndex);
+                          selectedDateTime = alarmChangeNotifier.calculateNextSundayToThursday(selectedDateTime);
                           alarmChangeNotifier.alarmList[i]['dateTime'] = selectedDateTime.toString();
                           final newAlarmSettings = AlarmSettings(
                             id: alarmChangeNotifier.alarmList[i]['id'],

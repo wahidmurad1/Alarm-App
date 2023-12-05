@@ -102,12 +102,12 @@ class AlarmDetailsPage extends ConsumerWidget {
                 height: 180,
                 child: CupertinoDatePicker(
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  initialDateTime: ref.watch(alarmChangeNotifier.isEdit) ? alarmChangeNotifier.dateTimeValue : DateTime.now(),
+                  initialDateTime: ref.watch(alarmChangeNotifier.isEdit) ? alarmChangeNotifier.selectedDateTime : DateTime.now(),
                   mode: CupertinoDatePickerMode.time,
                   use24hFormat: ref.watch(alarmChangeNotifier.clockStyleState) == '12 Hours' ? false : true,
                   onDateTimeChanged: (value) {
                     ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state = value;
-                    alarmChangeNotifier.dateTimeValue = value;
+                    alarmChangeNotifier.selectedDateTime = value;
                     alarmChangeNotifier.pickTime(value);
                     ref.read(alarmChangeNotifierProvider).getDifference(ref.read(alarmChangeNotifier.pickedTimeProvider.notifier).state);
                   },

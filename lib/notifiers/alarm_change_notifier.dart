@@ -59,7 +59,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
   String clockStyleValue = '12 Hours';
   final isEdit = StateProvider<bool>((ref) => false);
   DateTime selectedDateTime = DateTime.now();
-  DateTime dateTimeValue = DateTime.now();
+  // DateTime dateTimeValue = DateTime.now();
   final themeTypeProvider = StateProvider<bool>((ref) => true);
   bool themeType = true;
   int alarmId = -1;
@@ -70,7 +70,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
 
   void pickTime(time) {
     selectedDateTime = time;
-    if (selectedDateTime.isBefore(DateTime.now())) {
+    if (selectedDateTime.isBefore(DateTime.now()) && repeatTypeValue == 'Custom') {
       selectedDateTime = selectedDateTime.add(const Duration(days: 1));
     }
     if (clockStyleValue == '12 Hours') {
@@ -84,11 +84,25 @@ class AlarmChangeNotifier extends ChangeNotifier {
   void saveAlarm(context) async {
     alarmList.clear();
     var id = DateTime.now().millisecondsSinceEpoch % 10000;
+    if (repeatTypeValue == 'Custom') {
+      int closingDay = 8;
+      for (int i = 0; i < customDays.length; i++) {
+        // if(selectedDayState[i]==true){
+        //   customDays.add(days[i]);
+        // }
+        if (closingDay > getCustomDaysRemaining(customDays[i])) {
+          closingDay = getCustomDaysRemaining(customDays[i]);
+          log(closingDay.toString());
+        }
+        // updateState();
+      }
+      selectedDateTime = selectedDateTime.add(Duration(days: closingDay));
+    }
     Map<String, dynamic> alarmDetails = {
       "id": id,
       "label": labelValue,
       "time": pickedTime,
-      "dateTime": dateTimeValue.toString(),
+      "dateTime": selectedDateTime.toString(),
       "repeat": repeatTypeValue != 'Custom' ? repeatTypeValue : customDays.join(', '),
       "dayIndex": repeatTypeValue != 'Custom' ? -1 : customWeekDaysIndex.join(', '),
       "vibration": vibrationSwitchState,
@@ -101,6 +115,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
     await SpController().saveAlarmList(alarmDetails);
     alarmList = await SpController().getAlarmList();
     Navigator.pop(context);
+
     final alarmSettings = AlarmSettings(
       id: id,
       dateTime: selectedDateTime,
@@ -122,8 +137,9 @@ class AlarmChangeNotifier extends ChangeNotifier {
       if (alarmList[i]['id'] == id) {
         alarmList[i]['label'] = labelValue;
         alarmList[i]['time'] = pickedTime;
-        alarmList[i]['dateTime'] = dateTimeValue.toString();
+        alarmList[i]['dateTime'] = selectedDateTime.toString();
         alarmList[i]['repeat'] = repeatTypeValue != 'Custom' ? repeatTypeValue : customDays.join(', ');
+        alarmList[i]['dayIndex'] = repeatTypeValue != 'Custom' ? -1 : customWeekDaysIndex.join(', ');
         alarmList[i]['vibration'] = vibrationSwitchState;
         alarmList[i]['ringtone'] = ringtoneNameValue;
         alarmList[i]['alarmSwitch'] = true;
@@ -135,6 +151,7 @@ class AlarmChangeNotifier extends ChangeNotifier {
         // alarmList.clear();
         alarmList = await SpController().getAlarmList();
         Navigator.pop(context);
+        alarmList[i]['dateTime'] = selectedDateTime.toString();
         final alarmSettings = AlarmSettings(
           id: alarmList[i]['id'],
           dateTime: selectedDateTime,
@@ -255,15 +272,98 @@ class AlarmChangeNotifier extends ChangeNotifier {
     int currentDay = selectedDateTime.weekday;
     customWeekDaysIndex.sort();
     log('From Week days Sort List index ${customWeekDaysIndex.toString()}');
-    for (int day in customWeekDaysIndex) {
-      if (day >= currentDay) {
-        int daysToAdd = day - currentDay;
-        log('In day Difference ${daysToAdd.toString()}');
+
+    for (int dayIndex in customWeekDaysIndex) {
+      int daysToAdd = (dayIndex - currentDay + 7) % 7; // Calculate days to add, considering the circular nature of days
+      log('In day Difference ${daysToAdd.toString()}');
+      log('Next Alarm Schedule ${selectedDateTime.toString()}');
+      log('Selected Day Index ${dayIndex.toString()}');
+      log('Current Day Index ${currentDay.toString()}');
+
+      if (daysToAdd > 0) {
         return selectedDateTime.add(Duration(days: daysToAdd));
       }
     }
-    int daysToAdd = (customWeekDaysIndex.first - currentDay) + 7;
+
+    // If no suitable day is found in the current week, move to the next week
+    int daysToAdd = (customWeekDaysIndex.first - currentDay + 7) % 7;
     log('In day Difference ${daysToAdd.toString()}');
+    log('Next Alarm Schedule ${selectedDateTime.toString()}');
+    log('Selected Day Index ${customWeekDaysIndex.first.toString()}');
+    log('Current Day Index ${currentDay.toString()}');
+
     return selectedDateTime.add(Duration(days: daysToAdd));
+  }
+
+   DateTime calculateNextSundayToThursday(DateTime selectedDateTime) {
+    int currentDay = selectedDateTime.weekday;
+    if (currentDay >= 1 && currentDay <= 4) {
+      int daysToAdd = 1;
+      return selectedDateTime.add(Duration(days: daysToAdd));
+    } else {
+      int daysToAdd = (7 - currentDay) + 1;
+      log(daysToAdd.toString());
+      return selectedDateTime.add(Duration(days: daysToAdd));
+    }
+  }
+
+  // int getCustomDaysRemaining(int customIndex) {
+  //   DateTime now = DateTime.now();
+  //   int currentDayIndex = now.weekday;
+  //   dynamic targetDayIndex;
+  //   // customIndex.sort();
+  //   int remainingDay = -100;
+
+  //   for (int i = 0; i < weekDaysIndex.length; i++) {
+  //     for (int dayIndex in customIndex[i]) {
+  //       if (weekDaysIndex[i] == dayIndex) {
+  //         targetDayIndex = weekDaysIndex[i];
+  //         log('1 ${targetDayIndex.toString()}');
+  //       }
+  //     }
+  //   }
+
+  //   if (targetDayIndex != null) {
+  //     int remainingDay = targetDayIndex - currentDayIndex;
+  //     if (remainingDay <= 0) {
+  //       remainingDay = remainingDay + 7;
+  //       log('2 ${targetDayIndex.toString()}');
+  //     } else if (remainingDay == 0 && now.isBefore(selectedDateTime)) {
+  //     } else if (remainingDay == 0 && now.isAfter(selectedDateTime)) {
+  //       remainingDay = remainingDay + 7;
+  //       log('3 ${targetDayIndex.toString()}');
+  //     }
+  //   }
+  //   log('4 ${remainingDay.toString()}');
+  //   return remainingDay;
+  // }
+
+  int getCustomDaysRemaining(String day) {
+    DateTime now = DateTime.now();
+    int currentDayIndex = now.weekday;
+    dynamic targetDayIndex;
+    if (day == 'Mon') {
+      targetDayIndex = 1;
+    } else if (day == 'Tue') {
+      targetDayIndex = 2;
+    } else if (day == 'Wed') {
+      targetDayIndex = 3;
+    } else if (day == 'Thu') {
+      targetDayIndex = 4;
+    } else if (day == 'Fri') {
+      targetDayIndex = 5;
+    } else if (day == 'Sat') {
+      targetDayIndex = 6;
+    } else {
+      targetDayIndex = 7;
+    }
+    int remaingDay = targetDayIndex - currentDayIndex;
+    if (remaingDay < 0) {
+      remaingDay = remaingDay + 7;
+    } else if (remaingDay == 0 && now.isBefore(selectedDateTime)) {
+    } else if (remaingDay == 0 && now.isAfter(selectedDateTime)) {
+      remaingDay = remaingDay + 7;
+    }
+    return remaingDay;
   }
 }
